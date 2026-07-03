@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stock-13f"
+version = "0.1.0"
+description = "Standalone project for full-universe 13F quarterly rebalance exports and AI-focused reports."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+  { name = "Scott Li" }
+]
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]

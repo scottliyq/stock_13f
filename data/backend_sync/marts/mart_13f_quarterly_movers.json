@@ -1,0 +1,91 @@
+{
+  "periods": [
+    "2025-06-30",
+    "2025-09-30",
+    "2025-12-31",
+    "2026-03-31"
+  ],
+  "security_types": [
+    "etf",
+    "stock"
+  ],
+  "ranking_types": [
+    "top_new_manager_count",
+    "top_reduced_manager_count",
+    "top_total_holding_value"
+  ],
+  "sample_rows": [
+    {
+      "report_date": "2026-03-31",
+      "security_type": "etf",
+      "ranking_type": "top_new_manager_count",
+      "ticker": "SPDW",
+      "issuer": "SPDR INDEX SHS FDS - STATE STREET SPD (SPDW)"
+    },
+    {
+      "report_date": "2026-03-31",
+      "security_type": "etf",
+      "ranking_type": "top_new_manager_count",
+      "ticker": "SPEM",
+      "issuer": "SPDR INDEX SHS FDS - STATE STREET SPD (SPEM)"
+    },
+    {
+      "report_date": "2026-03-31",
+      "security_type": "etf",
+      "ranking_type": "top_new_manager_count",
+      "ticker": "XLE",
+      "issuer": "SELECT SECTOR SPDR TR - STATE STREET ENE (XLE)"
+    },
+    {
+      "report_date": "2026-03-31",
+      "security_type": "etf",
+      "ranking_type": "top_new_manager_count",
+      "ticker": "GLD",
+      "issuer": "SPDR GOLD TR - GOLD SHS (GLD)"
+    },
+    {
+      "report_date": "2026-03-31",
+      "security_type": "etf",
+      "ranking_type": "top_new_manager_count",
+      "ticker": "SPY",
+      "issuer": "STATE STR SPDR S&P 500 ETF T - TR UNIT (SPY)"
+    },
+    {
+      "report_date": "2026-03-31",
+      "security_type": "etf",
+      "ranking_type": "top_new_manager_count",
+      "ticker": "VOO",
+      "issuer": "VANGUARD INDEX FDS - S&P 500 ETF SHS (VOO)"
+    },
+    {
+      "report_date": "2026-03-31",
+      "security_type": "etf",
+      "ranking_type": "top_new_manager_count",
+      "ticker": "QQQ",
+      "issuer": "INVESCO QQQ TR - UNIT SER 1 (QQQ)"
+    },
+    {
+      "report_date": "2026-03-31",
+      "security_type": "etf",
+      "ranking_type": "top_new_manager_count",
+      "ticker": "FEZ",
+      "issuer": "SPDR INDEX SHS FDS - STATE STREET SPD (FEZ)"
+    },
+    {
+      "report_date": "2026-03-31",
+      "security_type": "etf",
+      "ranking_type": "top_new_manager_count",
+      "ticker": "VEA",
+      "issuer": "VANGUARD TAX-MANAGED FDS - VAN FTSE DEV MKT (VEA)"
+    },
+    {
+      "report_date": "2026-03-31",
+      "security_type": "etf",
+      "ranking_type": "top_new_manager_count",
+      "ticker": "RSP",
+      "issuer": "INVESCO EXCHANGE TRADED FD T - S&P500 EQL WGT (RSP)"
+    }
+  ],
+  "source_table": "mart_13f_quarterly_movers",
+  "mover_row_count": 2299
+}

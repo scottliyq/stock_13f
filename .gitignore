@@ -5,3 +5,4 @@ __pycache__/
 *.pyo
 *.swp
 .env
+data/backend_sync/edgar_cache/_tcache/

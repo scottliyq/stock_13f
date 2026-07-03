@@ -14,6 +14,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
 from datetime import date, datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -541,6 +542,7 @@ def business_profile(name_of_issuer: str) -> tuple[str, str]:
     return "暂未在内置规则中识别出详细业务描述。", "暂未识别出明确 AI 关系，需结合公司最新披露进一步核实。"
 
 
+@lru_cache(maxsize=32768)
 def ticker_for_issuer(name_of_issuer: str) -> str:
     upper_name = name_of_issuer.upper()
     for fragment, ticker in TICKER_RULES:
@@ -556,10 +558,14 @@ def display_issuer(name_of_issuer: str) -> str:
     return f"{name_of_issuer} ({ticker})"
 
 
-def matches_fragment(upper_name: str, fragment: str) -> bool:
+@lru_cache(maxsize=4096)
+def _compiled_fragment_pattern(fragment: str) -> re.Pattern[str]:
     escaped = re.escape(fragment.upper()).replace(r"\ ", r"\s+")
-    pattern = rf"(?<![A-Z0-9]){escaped}(?![A-Z0-9])"
-    return re.search(pattern, upper_name) is not None
+    return re.compile(rf"(?<![A-Z0-9]){escaped}(?![A-Z0-9])")
+
+
+def matches_fragment(upper_name: str, fragment: str) -> bool:
+    return _compiled_fragment_pattern(fragment).search(upper_name) is not None
 
 
 def holding_key(holding: Holding) -> str:

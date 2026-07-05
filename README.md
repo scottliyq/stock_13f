@@ -104,6 +104,13 @@ cd /Users/scottliyq/go/codex_space/stock_13f
 
 ## 常用命令
 
+定时调度后台任务（按 `config/backend_schedule.toml`，时间全部按美东 ET 解释）：
+
+```bash
+python scripts/backend_schedule.py --list-jobs
+python scripts/backend_schedule.py
+```
+
 导出最近 1 个季度的 `top100` 股票/ETF 调仓 CSV：
 
 ```bash

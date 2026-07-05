@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import urlparse
 import json
+import time
 
 import requests
 
@@ -52,6 +53,8 @@ class SupabaseRestClient:
         self._config = config
         self._base_url = _normalize_rest_base_url(config.url)
         self._timeout_seconds = timeout_seconds
+        self._max_retries = 3
+        self._retry_delay_seconds = 1.0
         self._session = requests.Session()
         self._session.headers.update(
             {
@@ -65,9 +68,26 @@ class SupabaseRestClient:
     def base_url(self) -> str:
         return self._base_url
 
+    def _request(self, method: str, url: str, failure_context: str, **kwargs) -> requests.Response:
+        session_method = getattr(self._session, method)
+        max_retries = max(int(getattr(self, "_max_retries", 3)), 1)
+        retry_delay_seconds = float(getattr(self, "_retry_delay_seconds", 1.0))
+        last_error: requests.RequestException | None = None
+        for attempt in range(1, max_retries + 1):
+            try:
+                return session_method(url, **kwargs)
+            except requests.RequestException as exc:
+                last_error = exc
+                if attempt == max_retries:
+                    break
+                time.sleep(retry_delay_seconds * attempt)
+        raise SupabaseError(f"Failed to {failure_context} after {max_retries} attempt(s): {last_error}") from last_error
+
     def table_exists(self, table_name: str) -> bool:
-        response = self._session.get(
+        response = self._request(
+            "get",
             f"{self._base_url}/{table_name}",
+            failure_context=f"inspect Supabase table {table_name!r}",
             params={"select": "*", "limit": "1"},
             timeout=self._timeout_seconds,
         )
@@ -93,8 +113,10 @@ class SupabaseRestClient:
     ) -> int:
         if not rows:
             return 0
-        response = self._session.post(
+        response = self._request(
+            "post",
             f"{self._base_url}/{table_name}",
+            failure_context=f"upsert rows into {table_name!r}",
             params={"on_conflict": on_conflict},
             headers={"Prefer": "resolution=merge-duplicates,return=minimal"},
             data=json.dumps(rows, ensure_ascii=False),
@@ -129,8 +151,10 @@ class SupabaseRestClient:
             params.update(filters)
         if order is not None:
             params["order"] = order
-        response = self._session.get(
+        response = self._request(
+            "get",
             f"{self._base_url}/{table_name}",
+            failure_context=f"fetch rows from {table_name!r}",
             params=params,
             timeout=self._timeout_seconds,
         )
@@ -148,8 +172,10 @@ class SupabaseRestClient:
         table_name: str,
         filters: dict[str, str],
     ) -> None:
-        response = self._session.delete(
+        response = self._request(
+            "delete",
             f"{self._base_url}/{table_name}",
+            failure_context=f"delete rows from {table_name!r}",
             params=filters,
             headers={"Prefer": "return=minimal"},
             timeout=self._timeout_seconds,

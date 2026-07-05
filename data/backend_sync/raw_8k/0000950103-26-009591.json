@@ -2,5 +2,127 @@
   "ticker": "CMCSA",
   "form": "8-K",
   "filing_date": "2026-06-29",
-  "company_name": "COMCAST CORP"
+  "company_name": "COMCAST CORP",
+  "accession_number": "0000950103-26-009591",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/1166691/0000950103-26-009591-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/1166691/000095010326009591/0000950103-26-009591.txt",
+  "period_of_report": "2026-06-29",
+  "date_of_report": "June 29, 2026",
+  "item_codes": [
+    "Item 8.01",
+    "Item 9.01"
+  ],
+  "items": [
+    {
+      "code": "Item 8.01",
+      "text": "Item 8.01 Other Events Attached as Exhibit 99.1 and incorporated by reference herein is a press release dated June 29, 2026, issued by Comcast Corporation."
+    },
+    {
+      "code": "Item 9.01",
+      "text": "Item 9.01(d) Exhibits Exhibit Description Number 99.1 Comcast Corporation Press Release dated June 29, 2026. ───────────────────────────────────────────────────────────────────────────────────────────── 104 Cover Page Interactive Data File (embedded within the Inline XBRL document). SIGNATURES Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned hereunto duly authorized. COMCAST CORPORATION By: /s/ Elizabeth Wideman Name: Elizabeth Wideman Date: June 29, 2026 Title: Senior Vice President, Senior Deputy General Counsel and Assistant Secretary"
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 1,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "dp249094_8k.htm",
+      "document_type": "8-K",
+      "description": "FORM 8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "dp249094_ex9901.htm",
+      "document_type": "EX-99.1",
+      "description": "EXHIBIT 99.1",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "cmcsa-20260629.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL SCHEMA FILE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "cmcsa-20260629_def.xml",
+      "document_type": "EX-101.DEF",
+      "description": "XBRL DEFINITION FILE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "5",
+      "document": "cmcsa-20260629_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL LABEL FILE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "6",
+      "document": "cmcsa-20260629_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL PRESENTATION FILE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "7",
+      "document": "image_003.jpg",
+      "document_type": "GRAPHIC",
+      "description": "GRAPHIC",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "9",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "Cover"
+    },
+    {
+      "sequence_number": "10",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "11",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "13",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "15",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "16",
+      "document": "0000950103-26-009591-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "17",
+      "document": "dp249094_8k_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

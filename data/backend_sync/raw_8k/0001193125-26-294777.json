@@ -2,5 +2,118 @@
   "ticker": "LNG",
   "form": "8-K",
   "filing_date": "2026-07-02",
-  "company_name": "Cheniere Energy, Inc."
+  "company_name": "Cheniere Energy, Inc.",
+  "accession_number": "0001193125-26-294777",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/3570/0001193125-26-294777-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/3570/000119312526294777/0001193125-26-294777.txt",
+  "period_of_report": "2026-06-26",
+  "date_of_report": "June 26, 2026",
+  "item_codes": [
+    "Item 1.01",
+    "Item 2.03",
+    "Item 9.01"
+  ],
+  "items": [
+    {
+      "code": "Item 1.01",
+      "text": "Item 1.01 Entry into a Material Definitive Agreement. Commitment Increase and Maturity Extension Agreement On June 26, 2026, Cheniere Energy, Inc. (“ CEI”) entered into a Commitment Increase and Maturity Extension Agreement (the “ CEI Agreement”) by and among CEI, as borrower (the “ Borrower”), Société Générale, as administrative agent (the “ Administrative Agent”) and the lenders party thereto, with respect to the Third Amended and Restated Revolving Credit Agreement, dated as of August 1, 2025 (as may be amended, restated, amended and restated, extended, supplemented or otherwise modified from time to time, the “ CEI Revolving Credit Facility”), by and among the Borrower, the lenders and issuing banks party thereto from time to time, the Administrative Agent and the other agents and arrangers party thereto from time to time. The CEI Agreement increases the aggregate commitments under the CEI Revolving Credit Facility by $500 million to $1.75 billion and extends the maturity date thereof by one year, from August 1, 2030 to August 1, 2031. All other terms and conditions of the CEI Revolving Credit Facility remain unchanged and in full force and effect. CCH Revolving Credit Agreement and Related Finance Documents On June 26, 2026, Cheniere Corpus Christi Holdings, LLC (“ CCH”), Cheniere Corpus Christi Pipeline, L.P. (“ CCP”), Corpus Christi Pipeline GP, LLC (“ CCP GP”) and Corpus Christi Liquefaction, LLC (“CCL”) (CCP, CCP GP and CCL, collectively, the “ Guarantors” and, CCH and the Guarantors, collectively, the “ Loan Parties”), each indirectly wholly owned by CEI, entered into the Revolving Credit Agreement (the “ CCH Revolving Credit Agreement”) with the lenders party thereto from time to time, the issuing banks party thereto from time to time, the swing line lenders party thereto from time to time, The Bank of Nova Scotia, as revolving facility agent (the “ CCH Revolving Facility Agent”) and, solely for purposes of Section 3.07, Société Générale, as Security Trustee. The CCH Revolving Credit Agreement amends and restates CCH’s existing working capital facility agreement to decrease the total committed amount under the CCH Revolving Credit Agreement by $500 million to $1.0 billion. The CCH Revolving Credit Agreement is intended to be used for loans (“ Revolving Loans”) to, and the issuance of letters of credit (“ Letters of Credit”) on behalf of, CCH, for general corporate purposes related to the operation of CCH’s Corpus Christi natural gas liquefaction facilities and Corpus Christi natural gas pipeline and related facilities near Corpus Christi, Texas, including to refinance outstanding loans or letters of credit under the existing working capital facility agreement. The entire amount of the CCH Revolving Credit Agreement will be available for the issuance of Letters of Credit."
+    },
+    {
+      "code": "Item 2.03",
+      "text": "Item 2.03 Creation of a Direct Financial Obligation or an Obligation under an Off-Balance Sheet Arrangement of a Registrant. The information set forth under Item 1.01 of this Current Report on Form8-Kis incorporated by reference into this Item 2.03."
+    },
+    {
+      "code": "Item 9.01",
+      "text": "Item 9.01 Financial Statements and Exhibits. d) Exhibits Exhibit Description Number 10.1* Commitment Increase and Maturity Extension Agreement, dated as of June 26, 2026, among Cheniere Energy, Inc., the lenders party thereto and Société Générale, as Administrative Agent. ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 10.2 Revolving Credit Agreement, dated as of June 26, 2026, among Cheniere Corpus Christi Holdings, LLC, Cheniere Corpus Christi Pipeline, L.P., Corpus Christi Pipeline GP, LLC, Corpus Christi Liquefaction, LLC, the lenders party thereto from time to time, the issuing banks party thereto from time to time, the swing line lenders party thereto from time to time, The Bank of Nova Scotia as Revolving Facility Agent and, solely for the purposes of Section 3.07, Société Générale as Security Trustee... 10.3 Second Amendment to Second Amended and Restated Term Loan Facility Agreement, dated as of June 26, 2026, among Cheniere Corpus Christi Holdings, LLC, Cheniere Corpus Christi Pipeline, L.P., Corpus Christi Pipeline GP, LLC, Corpus Christi Liquefaction, LLC and Société Générale as Term Loan Facility Agent (incorporated by reference to Exhibit 10.2 to Cheniere Corpus Christi Holdings, LLC’s Current Report on File 8-K (SEC File No. 333-215435, filed on July 2, 2026)). 104 Cover Page Interactive Data File (embedded within the Inline XBRL document and contained in Exhibit 101). Filed herewith. SIGNATURES Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned hereunto duly authorized. CHENIERE ENERGY, INC. Dated: July 2, 2026 By: /s/ Zach Davis Name: Zach Davis Title: Executive Vice President and Chief Financial Officer [Signature page to Closing Form 8-K]"
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 0,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "d73800d8k.htm",
+      "document_type": "8-K",
+      "description": "8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "d73800dex101.htm",
+      "document_type": "EX-10.1",
+      "description": "EX-10.1",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "lng-20260626.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL TAXONOMY EXTENSION SCHEMA",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "lng-20260626_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "5",
+      "document": "lng-20260626_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "7",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "Document and Entity Information"
+    },
+    {
+      "sequence_number": "8",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "9",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "11",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "13",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "14",
+      "document": "0001193125-26-294777-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "15",
+      "document": "d73800d8k_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

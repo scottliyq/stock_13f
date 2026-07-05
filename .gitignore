@@ -6,3 +6,6 @@ __pycache__/
 *.swp
 .env
 data/backend_sync/edgar_cache/_tcache/
+data/backend_sync/
+data/backend_sync/marts/
+data/backend_sync/raw_8k/

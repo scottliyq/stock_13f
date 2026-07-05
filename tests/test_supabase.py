@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from pathlib import Path
 import sys
 
+import requests
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = REPO_ROOT / "src"
@@ -34,6 +36,21 @@ class FakeSession:
         return self._response
 
     def delete(self, *args, **kwargs) -> FakeResponse:
+        return self._response
+
+
+class FlakyPostSession:
+    def __init__(self, response: FakeResponse, failures: int) -> None:
+        self._response = response
+        self._failures_remaining = failures
+        self.post_calls = 0
+        self.headers: dict[str, str] = {}
+
+    def post(self, *args, **kwargs) -> FakeResponse:
+        self.post_calls += 1
+        if self._failures_remaining > 0:
+            self._failures_remaining -= 1
+            raise requests.exceptions.SSLError("temporary ssl eof")
         return self._response
 
 
@@ -106,3 +123,17 @@ def test_delete_rows_succeeds_on_204() -> None:
     client._session = FakeSession(FakeResponse(status_code=204, text="", payload={}))
 
     client.delete_rows("foo", {"report_date": "eq.2026-03-31"})
+
+
+def test_upsert_rows_retries_transient_ssl_error() -> None:
+    client = SupabaseRestClient.__new__(SupabaseRestClient)
+    client._base_url = "https://example.supabase.co/rest/v1"
+    client._timeout_seconds = 30
+    client._max_retries = 3
+    client._retry_delay_seconds = 0.0
+    client._session = FlakyPostSession(FakeResponse(status_code=201, text="", payload={}), failures=1)
+
+    written = client.upsert_rows("foo", [{"id": 1}], on_conflict="id")
+
+    assert written == 1
+    assert client._session.post_calls == 2

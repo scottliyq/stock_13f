@@ -5,6 +5,7 @@ import argparse
 import csv
 import json
 import logging
+import re
 import time
 import urllib.error
 import urllib.request
@@ -18,6 +19,7 @@ DEFAULT_MAP_PATH = REPO_ROOT / "data" / "cusip_ticker_map.csv"
 DEFAULT_REPORTS_DIR = REPO_ROOT / "reports" / "13_following" / "data"
 OPENFIGI_URL = "https://api.openfigi.com/v3/mapping"
 DEFAULT_MAX_RETRIES = 5
+CURRENCY_SUFFIXES = ("USD", "EUR", "GBP", "GBX")
 
 
 @dataclass(frozen=True)
@@ -77,17 +79,49 @@ def batched[T](items: list[T], batch_size: int) -> list[list[T]]:
     return [items[index : index + batch_size] for index in range(0, len(items), batch_size)]
 
 
-def query_openfigi_batch(batch: list[MissingCusip]) -> list[dict[str, str]]:
-    payload = json.dumps(
+def build_openfigi_payload(batch: list[MissingCusip], use_exchange_code: bool) -> bytes:
+    return json.dumps(
         [
             {
                 "idType": "ID_CUSIP",
                 "idValue": item.cusip,
-                "exchCode": "US",
+                **({"exchCode": "US"} if use_exchange_code else {}),
             }
             for item in batch
         ]
     ).encode()
+
+
+def _normalize_openfigi_ticker(raw_ticker: str) -> str:
+    ticker = str(raw_ticker or "").strip().upper().rstrip("*")
+    if not ticker:
+        return ""
+    for suffix in CURRENCY_SUFFIXES:
+        if ticker.endswith(suffix) and len(ticker) > len(suffix):
+            base_ticker = ticker[: -len(suffix)]
+            if re.fullmatch(r"[A-Z]{1,6}", base_ticker):
+                return base_ticker
+    return ticker
+
+
+def _candidate_sort_key(candidate: dict[str, object]) -> tuple[int, int, str]:
+    ticker = _normalize_openfigi_ticker(str(candidate.get("ticker", "") or ""))
+    if re.fullmatch(r"[A-Z]{1,5}", ticker):
+        return (0, len(ticker), ticker)
+    if re.fullmatch(r"[A-Z0-9]{1,6}", ticker):
+        return (1, len(ticker), ticker)
+    return (2, len(ticker), ticker)
+
+
+def _select_openfigi_candidate(candidates: list[dict[str, object]]) -> dict[str, object] | None:
+    valid_candidates = [candidate for candidate in candidates if _normalize_openfigi_ticker(candidate.get("ticker", ""))]
+    if not valid_candidates:
+        return None
+    return min(valid_candidates, key=_candidate_sort_key)
+
+
+def _request_openfigi_batch(batch: list[MissingCusip], use_exchange_code: bool) -> list[object]:
+    payload = build_openfigi_payload(batch, use_exchange_code=use_exchange_code)
     request = urllib.request.Request(
         OPENFIGI_URL,
         data=payload,
@@ -97,15 +131,27 @@ def query_openfigi_batch(batch: list[MissingCusip]) -> list[dict[str, str]]:
         },
     )
     with urllib.request.urlopen(request, timeout=30) as response:
-        raw_results = json.loads(response.read().decode())
+        return json.loads(response.read().decode())
+
+
+def _extract_openfigi_mappings(
+    batch: list[MissingCusip],
+    raw_results: list[object],
+) -> tuple[list[dict[str, str]], list[MissingCusip]]:
     mappings: list[dict[str, str]] = []
+    unresolved_items: list[MissingCusip] = []
     for item, result in zip(batch, raw_results, strict=True):
-        candidates = result.get("data", [])
-        if not candidates:
+        if not isinstance(result, dict):
+            unresolved_items.append(item)
             continue
-        candidate = candidates[0]
-        ticker = str(candidate.get("ticker", "")).strip().upper().rstrip("*")
+        candidates = result.get("data", [])
+        candidate = _select_openfigi_candidate(candidates)
+        if candidate is None:
+            unresolved_items.append(item)
+            continue
+        ticker = _normalize_openfigi_ticker(str(candidate.get("ticker", "") or ""))
         if not ticker:
+            unresolved_items.append(item)
             continue
         mappings.append(
             {
@@ -114,7 +160,20 @@ def query_openfigi_batch(batch: list[MissingCusip]) -> list[dict[str, str]]:
                 "issuer": candidate.get("name", "").strip() or item.issuer,
             }
         )
-    return mappings
+    return mappings, unresolved_items
+
+
+def query_openfigi_batch(batch: list[MissingCusip]) -> list[dict[str, str]]:
+    primary_results = _request_openfigi_batch(batch, use_exchange_code=True)
+    primary_mappings, unresolved_items = _extract_openfigi_mappings(batch, primary_results)
+    if not unresolved_items:
+        return primary_mappings
+    fallback_results = _request_openfigi_batch(unresolved_items, use_exchange_code=False)
+    fallback_mappings, _ = _extract_openfigi_mappings(unresolved_items, fallback_results)
+    mappings_by_cusip = {row["cusip"]: row for row in primary_mappings}
+    for row in fallback_mappings:
+        mappings_by_cusip[row["cusip"]] = row
+    return list(mappings_by_cusip.values())
 
 
 def retry_delay_seconds(

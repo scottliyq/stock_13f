@@ -14,6 +14,8 @@ if str(SRC_DIR) not in sys.path:
 
 from stock_13f.core.logging import configure_logging
 from stock_13f.core.settings import Settings
+from stock_13f.domain.sync_requests import Audit13DGCoverageRequest
+from stock_13f.domain.sync_requests import BackfillTickersRequest
 from stock_13f.domain.sync_requests import RebuildMartsRequest
 from stock_13f.domain.sync_requests import Sync13DGRequest
 from stock_13f.domain.sync_requests import Sync13FRequest
@@ -28,14 +30,25 @@ def _split_tickers(raw_value: str | None) -> tuple[str, ...]:
     return tuple(part.strip().upper() for part in raw_value.split(",") if part.strip())
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Unified backend sync entrypoint for stock_13f.")
+def _split_identifiers(raw_value: str | None) -> tuple[str, ...]:
+    if not raw_value:
+        return ()
+    return tuple(part.strip() for part in raw_value.split(",") if part.strip())
+
+
+def _add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--log-level", default="INFO")
     parser.add_argument("--job-id")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Unified backend sync entrypoint for stock_13f.")
+    _add_common_args(parser)
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     sync_13f = subparsers.add_parser("sync-13f", help="Sync quarterly structured 13F data.")
+    _add_common_args(sync_13f)
     sync_13f.add_argument("--mode", default="incremental")
     sync_13f.add_argument("--quarters", type=int, default=4)
     sync_13f.add_argument("--latest-report-date")
@@ -46,6 +59,7 @@ def build_parser() -> argparse.ArgumentParser:
     sync_13f.add_argument("--openfigi-sleep-seconds", type=float, default=1.0)
 
     sync_8k = subparsers.add_parser("sync-8k", help="Sync 8-K filings with edgartools.")
+    _add_common_args(sync_8k)
     sync_8k.add_argument("--days-back", type=int, default=7)
     sync_8k.add_argument("--date-from")
     sync_8k.add_argument("--tickers")
@@ -53,19 +67,42 @@ def build_parser() -> argparse.ArgumentParser:
     sync_8k.add_argument("--max-filings", type=int, default=100)
 
     sync_13dg = subparsers.add_parser("sync-13dg", help="Sync 13D/G filings with edgartools.")
+    _add_common_args(sync_13dg)
+    sync_13dg.add_argument("--mode", default="issuer")
     sync_13dg.add_argument("--days-back", type=int, default=30)
     sync_13dg.add_argument("--date-from")
     sync_13dg.add_argument("--tickers")
+    sync_13dg.add_argument("--manager-ciks")
+    sync_13dg.add_argument("--manager-scope", default="watchlist")
     sync_13dg.add_argument("--universe-source", default="dim")
     sync_13dg.add_argument("--max-filings", type=int, default=100)
+    sync_13dg.add_argument("--form-scope", default="all")
+
+    audit_13dg = subparsers.add_parser("audit-13dg-coverage", help="Audit 13D/G coverage for tracked managers.")
+    _add_common_args(audit_13dg)
+    audit_13dg.add_argument("--days-back", type=int, default=180)
+    audit_13dg.add_argument("--date-from")
+    audit_13dg.add_argument("--manager-ciks")
+    audit_13dg.add_argument("--manager-scope", default="watchlist")
+    audit_13dg.add_argument("--max-filings", type=int, default=100)
+    audit_13dg.add_argument("--form-scope", default="all")
 
     rebuild = subparsers.add_parser("rebuild-marts", help="Rebuild local mart snapshots.")
+    _add_common_args(rebuild)
     rebuild.add_argument("--rebuild", default="all")
     rebuild.add_argument("--export-legacy-csv", action="store_true")
     rebuild.add_argument("--export-legacy-reports", action="store_true")
     rebuild.add_argument("--top-limit-max", type=int, default=100)
 
+    backfill_tickers = subparsers.add_parser("backfill-tickers", help="Backfill missing ticker fields in Supabase marts.")
+    _add_common_args(backfill_tickers)
+    backfill_tickers.add_argument("--with-openfigi", action="store_true")
+    backfill_tickers.add_argument("--openfigi-batch-size", type=int, default=10)
+    backfill_tickers.add_argument("--openfigi-sleep-seconds", type=float, default=3.0)
+    backfill_tickers.add_argument("--openfigi-max-batches", type=int, default=0)
+
     sync_all = subparsers.add_parser("sync-all", help="Run every sync command in sequence.")
+    _add_common_args(sync_all)
     sync_all.add_argument("--with-marts", action="store_true")
     sync_all.add_argument("--fail-fast", action="store_true")
 
@@ -136,11 +173,32 @@ def main() -> int:
                 dry_run=args.dry_run,
                 log_level=args.log_level,
                 job_id=args.job_id,
+                mode=args.mode,
                 days_back=args.days_back,
                 date_from=args.date_from,
                 tickers=_split_tickers(args.tickers),
+                manager_ciks=_split_identifiers(args.manager_ciks),
+                manager_scope=args.manager_scope,
                 universe_source=args.universe_source,
                 max_filings=args.max_filings,
+                form_scope=args.form_scope,
+            )
+        )
+        _print_result(result)
+        return 0 if result.status == "success" else 1
+
+    if args.command == "audit-13dg-coverage":
+        result = orchestrator.audit_13dg_coverage(
+            Audit13DGCoverageRequest(
+                dry_run=args.dry_run,
+                log_level=args.log_level,
+                job_id=args.job_id,
+                days_back=args.days_back,
+                date_from=args.date_from,
+                manager_ciks=_split_identifiers(args.manager_ciks),
+                manager_scope=args.manager_scope,
+                max_filings=args.max_filings,
+                form_scope=args.form_scope,
             )
         )
         _print_result(result)
@@ -156,6 +214,21 @@ def main() -> int:
                 export_legacy_csv=args.export_legacy_csv,
                 export_legacy_reports=args.export_legacy_reports,
                 top_limit_max=args.top_limit_max,
+            )
+        )
+        _print_result(result)
+        return 0 if result.status == "success" else 1
+
+    if args.command == "backfill-tickers":
+        result = orchestrator.backfill_tickers(
+            BackfillTickersRequest(
+                dry_run=args.dry_run,
+                log_level=args.log_level,
+                job_id=args.job_id,
+                with_openfigi=args.with_openfigi,
+                openfigi_batch_size=args.openfigi_batch_size,
+                openfigi_sleep_seconds=args.openfigi_sleep_seconds,
+                openfigi_max_batches=args.openfigi_max_batches,
             )
         )
         _print_result(result)

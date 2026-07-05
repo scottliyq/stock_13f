@@ -36,3 +36,27 @@ class Raw13DGRepository:
             "synced_at": datetime.now(timezone.utc).isoformat(),
         }
         self._supabase_client.upsert_rows(self._table_name, [row], on_conflict="accession_number")
+
+    def replace_reporting_person_rows(self, accession_number: str, rows: list[dict[str, object]]) -> int:
+        if self._supabase_client is None:
+            return 0
+        self._supabase_client.delete_rows(
+            "raw_13dg_reporting_persons",
+            filters={"accession_number": f"eq.{accession_number}"},
+        )
+        if not rows:
+            return 0
+        return self._supabase_client.upsert_rows(
+            "raw_13dg_reporting_persons",
+            rows,
+            on_conflict="row_key",
+        )
+
+    def upsert_sync_source_row(self, row: dict[str, object]) -> int:
+        if self._supabase_client is None:
+            return 0
+        return self._supabase_client.upsert_rows(
+            "raw_13dg_sync_sources",
+            [row],
+            on_conflict="row_key",
+        )

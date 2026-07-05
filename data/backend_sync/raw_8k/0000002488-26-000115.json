@@ -2,5 +2,108 @@
   "ticker": "AMD",
   "form": "8-K",
   "filing_date": "2026-07-01",
-  "company_name": "ADVANCED MICRO DEVICES INC"
+  "company_name": "ADVANCED MICRO DEVICES INC",
+  "accession_number": "0000002488-26-000115",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/2488/0000002488-26-000115-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/2488/000000248826000115/0000002488-26-000115.txt",
+  "period_of_report": "2026-06-26",
+  "date_of_report": "June 26, 2026",
+  "item_codes": [
+    "Item 5.02"
+  ],
+  "items": [
+    {
+      "code": "Item 5.02",
+      "text": "Item 5.02. Departure of Directors or Certain Officers; Election of Directors; Appointment of Certain Officers; Compensatory Arrangements of Certain Officers. On June 26, 2026, the Board of Directors (the “Board”) of Advanced Micro Devices, Inc. (the “ Company”) and the Compensation and Leadership Resources Committee of the Board (the “Committee”), as applicable, approved the following changes to the compensation of certain members of the Company’s executive team:"
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 0,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "amd-20260626.htm",
+      "document_type": "8-K",
+      "description": "8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "amd-20260626.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL TAXONOMY EXTENSION SCHEMA DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "amd-20260626_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "amd-20260626_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "5",
+      "document": "amd-20260626_g1.jpg",
+      "document_type": "GRAPHIC",
+      "description": "",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "7",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "Cover Page"
+    },
+    {
+      "sequence_number": "8",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "9",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "11",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "13",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "14",
+      "document": "0000002488-26-000115-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "15",
+      "document": "amd-20260626_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 
 from stock_13f.adapters.structured_13f_dataset import Structured13FDatasetAdapter
 from stock_13f.core.settings import Settings
+from stock_13f.domain.sync_requests import Audit13DGCoverageRequest
+from stock_13f.domain.sync_requests import BackfillTickersRequest
 from stock_13f.domain.sync_requests import RebuildMartsRequest
 from stock_13f.domain.sync_requests import Sync13DGRequest
 from stock_13f.domain.sync_requests import Sync13FRequest
@@ -14,6 +16,7 @@ from stock_13f.domain.sync_results import SyncResult
 from stock_13f.repositories.checkpoints import CheckpointRepository
 from stock_13f.services.eightk_sync_service import EightKSyncService
 from stock_13f.services.marts_service import MartsService
+from stock_13f.services.ticker_backfill_service import TickerBackfillService
 from stock_13f.services.thirteendg_sync_service import ThirteenDGSyncService
 from stock_13f.services.thirteenf_sync_service import ThirteenFSyncService
 
@@ -29,6 +32,7 @@ class BackendOrchestrator:
         eightk_service: EightKSyncService | None = None,
         thirteendg_service: ThirteenDGSyncService | None = None,
         marts_service: MartsService | None = None,
+        ticker_backfill_service: TickerBackfillService | None = None,
     ) -> None:
         checkpoints = checkpoints or CheckpointRepository(settings.paths.checkpoints_path)
         self._settings = settings
@@ -37,6 +41,7 @@ class BackendOrchestrator:
         self._eightk_service = eightk_service or EightKSyncService(settings, checkpoints)
         self._thirteendg_service = thirteendg_service or ThirteenDGSyncService(settings, checkpoints)
         self._marts_service = marts_service or MartsService(settings, checkpoints)
+        self._ticker_backfill_service = ticker_backfill_service or TickerBackfillService(settings, checkpoints)
 
     def sync_13f(self, request: Sync13FRequest) -> SyncResult:
         return self._thirteenf_service.sync(request)
@@ -47,8 +52,27 @@ class BackendOrchestrator:
     def sync_13dg(self, request: Sync13DGRequest) -> SyncResult:
         return self._thirteendg_service.sync(request)
 
+    def audit_13dg_coverage(self, request: Audit13DGCoverageRequest) -> SyncResult:
+        return self._thirteendg_service.audit_coverage(
+            Sync13DGRequest(
+                dry_run=request.dry_run,
+                log_level=request.log_level,
+                job_id=request.job_id,
+                mode="manager",
+                days_back=request.days_back,
+                date_from=request.date_from,
+                manager_ciks=request.manager_ciks,
+                manager_scope=request.manager_scope,
+                max_filings=request.max_filings,
+                form_scope=request.form_scope,
+            )
+        )
+
     def rebuild_marts(self, request: RebuildMartsRequest) -> SyncResult:
         return self._marts_service.rebuild(request)
+
+    def backfill_tickers(self, request: BackfillTickersRequest) -> SyncResult:
+        return self._ticker_backfill_service.backfill(request)
 
     def sync_all(self, request: SyncAllRequest) -> SyncResult:
         started_at = datetime.now(timezone.utc)

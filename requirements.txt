@@ -1,0 +1,13 @@
+# Runtime dependencies declared in pyproject.toml
+edgartools>=4.20.2
+filelock>=3.16.1
+pandas>=2.2.0
+python-dotenv>=1.0.1
+requests>=2.32.3
+schedule>=1.2.2
+streamlit>=1.46.0
+structlog>=24.4.0
+
+# Additional dependencies imported by the codebase/tests
+httpx>=0.28.1
+pytest>=9.1.1

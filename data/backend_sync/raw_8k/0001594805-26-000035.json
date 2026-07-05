@@ -2,5 +2,120 @@
   "ticker": "SHOP",
   "form": "8-K",
   "filing_date": "2026-07-02",
-  "company_name": "SHOPIFY INC."
+  "company_name": "SHOPIFY INC.",
+  "accession_number": "0001594805-26-000035",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/1594805/0001594805-26-000035-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000035/0001594805-26-000035.txt",
+  "period_of_report": "2026-07-02",
+  "date_of_report": "July 02, 2026",
+  "item_codes": [
+    "Item 5.02",
+    "Item 9.01"
+  ],
+  "items": [
+    {
+      "code": "Item 5.02",
+      "text": "Item 5.02. Departure of Directors or Certain Officers; Election of Directors; Appointment of Certain Officers; Compensatory Arrangements of Certain Officers. On July 2, 2026, Prashanth Mahendra-Rajah, a member of Shopify Inc.'s board of directors (the \"Board\") and Chair of the Audit Committee of the Board, informed the Company of his resignation from the Board effective immediately. Mr. Mahendra-Rajah has accepted a full time position with the U.S. Department of Commerce. Joe Natale, Chair of the Board and the Company’s Lead Independent Director, is expected to serve as the Chair of the Audit Committee of the Board following Mr. Mahendra-Rajah’s resignation."
+    },
+    {
+      "code": "Item 9.01",
+      "text": "Item 9.01. Financial Statements and Exhibits. Exhibit No. Description ──────────────────────────────────────────────────────────────────────────────────────────────── 104 Cover Page Interactive Data File (embedded within the Inline XBRL document) SIGNATURES Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned hereunto duly authorized. SHOPIFY INC. By: /s/ Michael L. Johnson Name: Michael L. Johnson Title: Corporate Secretary"
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 0,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "shop-20260702.htm",
+      "document_type": "8-K",
+      "description": "8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "shop-20260702.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL TAXONOMY EXTENSION SCHEMA DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "shop-20260702_def.xml",
+      "document_type": "EX-101.DEF",
+      "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "shop-20260702_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "5",
+      "document": "shop-20260702_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "6",
+      "document": "shop-20260702_g1.jpg",
+      "document_type": "GRAPHIC",
+      "description": "",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "8",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "Cover"
+    },
+    {
+      "sequence_number": "9",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "10",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "12",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "14",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "15",
+      "document": "0001594805-26-000035-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "16",
+      "document": "shop-20260702_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

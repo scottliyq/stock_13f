@@ -63,6 +63,126 @@ class MartsRepository:
             order=order,
         )
 
+    def upsert_manager_rebalance_summaries(self, rows: list[dict[str, object]]) -> int:
+        if self._supabase_client is None:
+            return 0
+        return self._supabase_client.upsert_rows(
+            "mart_manager_rebalance_summary",
+            rows,
+            on_conflict="row_key",
+        )
+
+    def replace_manager_rebalance_summaries(
+        self,
+        report_dates: list[str],
+        rows: list[dict[str, object]],
+    ) -> int:
+        if self._supabase_client is None:
+            return 0
+        for report_date in sorted(set(report_dates)):
+            self._supabase_client.delete_rows(
+                "mart_manager_rebalance_summary",
+                filters={"report_date": f"eq.{report_date}"},
+            )
+        return self.upsert_manager_rebalance_summaries(rows)
+
+    def fetch_manager_rebalance_summaries(
+        self,
+        limit: int = 1000,
+        offset: int = 0,
+        filters: dict[str, str] | None = None,
+        order: str | None = None,
+    ) -> list[dict[str, object]]:
+        if self._supabase_client is None:
+            return []
+        return self._supabase_client.fetch_rows(
+            "mart_manager_rebalance_summary",
+            limit=limit,
+            offset=offset,
+            filters=filters,
+            order=order,
+        )
+
+    def upsert_manager_rebalance_details(self, rows: list[dict[str, object]]) -> int:
+        if self._supabase_client is None:
+            return 0
+        return self._supabase_client.upsert_rows(
+            "mart_manager_rebalance_detail",
+            rows,
+            on_conflict="row_key",
+        )
+
+    def replace_manager_rebalance_details(
+        self,
+        report_dates: list[str],
+        rows: list[dict[str, object]],
+    ) -> int:
+        if self._supabase_client is None:
+            return 0
+        for report_date in sorted(set(report_dates)):
+            self._supabase_client.delete_rows(
+                "mart_manager_rebalance_detail",
+                filters={"report_date": f"eq.{report_date}"},
+            )
+        return self.upsert_manager_rebalance_details(rows)
+
+    def fetch_manager_rebalance_details(
+        self,
+        limit: int = 1000,
+        offset: int = 0,
+        filters: dict[str, str] | None = None,
+        order: str | None = None,
+    ) -> list[dict[str, object]]:
+        if self._supabase_client is None:
+            return []
+        return self._supabase_client.fetch_rows(
+            "mart_manager_rebalance_detail",
+            limit=limit,
+            offset=offset,
+            filters=filters,
+            order=order,
+        )
+
+    def upsert_manager_security_latest_rows(self, rows: list[dict[str, object]]) -> int:
+        if self._supabase_client is None:
+            return 0
+        return self._supabase_client.upsert_rows(
+            "mart_manager_security_latest",
+            rows,
+            on_conflict="row_key",
+        )
+
+    def replace_manager_security_latest_rows(
+        self,
+        report_dates: list[str],
+        rows: list[dict[str, object]],
+    ) -> int:
+        if self._supabase_client is None:
+            return 0
+        for report_date in sorted(set(report_dates)):
+            self._supabase_client.delete_rows(
+                "mart_manager_security_latest",
+                filters={"report_date": f"eq.{report_date}"},
+            )
+        return self.upsert_manager_security_latest_rows(rows)
+
+    def fetch_manager_security_latest_rows(
+        self,
+        limit: int = 1000,
+        offset: int = 0,
+        filters: dict[str, str] | None = None,
+        order: str | None = None,
+    ) -> list[dict[str, object]]:
+        if self._supabase_client is None:
+            return []
+        return self._supabase_client.fetch_rows(
+            "mart_manager_security_latest",
+            limit=limit,
+            offset=offset,
+            filters=filters,
+            order=order,
+        )
+
     def upsert_manager_watchlist(self, rows: list[dict[str, object]]) -> int:
         if self._supabase_client is None:
             return 0

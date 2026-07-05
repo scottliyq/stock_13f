@@ -2,5 +2,120 @@
   "ticker": "BLK",
   "form": "8-K",
   "filing_date": "2026-06-30",
-  "company_name": "BlackRock, Inc."
+  "company_name": "BlackRock, Inc.",
+  "accession_number": "0001193125-26-290830",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/2012383/0001193125-26-290830-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/2012383/000119312526290830/0001193125-26-290830.txt",
+  "period_of_report": "2026-06-30",
+  "date_of_report": "June 30, 2026",
+  "item_codes": [
+    "Item 8.01",
+    "Item 9.01"
+  ],
+  "items": [
+    {
+      "code": "Item 8.01",
+      "text": "Item 8.01. Other Events. On June 30, 2026, BlackRock, Inc. (the “Company”) filed with the Securities and Exchange Commission (the “SEC”) a prospectus supplement (the “Prospectus Supplement”) to register the issuance by the Company of up to 12,035,866 shares (the “Shares”) of the Company’s common stock, $0.01 par value per share (the “common stock”), to the holders of Class B-2membership units (“SubCo Units”) of BlackRock Saturn Subco, LLC (“Subco”), a consolidated subsidiary of the Company, from time to time upon redemption of an equal number of such SubCo Units pursuant to the terms of the Amended and Restated Operating Agreement of Subco, dated as of July 1, 2025 (the “LLC Agreement”). The Shares consist of (i) up to 7,606,927 shares of common stock issuable upon redemption of 7,606,927 SubCo Units that were issued as closing date consideration for the Company’s acquisition of 100% of the business and assets of HPS Investment Partners (the “HPS Transaction”) at the closing of the HPS Transaction on July 1, 2025 (the “Closing”) and (ii) up to 4,428,939 shares of common stock issuable upon redemption of up to an additional 4,428,939 SubCo Units (the “Deferred Consideration Units”) that may be issued in the future as deferred consideration for the HPS Transaction, subject to the achievement of certain post-Closing conditions and financial performance milestones. Pursuant to the LLC Agreement, the SubCo Units will be redeemable, at the option of the Subco members holding such SubCo Units, at certain times following the one-yearanniversary of the Closing (or, in the case of the Deferred Consideration Units, upon issuance) for either (i) one share of common stock (subject to certain proportionate adjustments) or (ii) a cash settlement amount (solely at the option of Subco). Under the LLC Agreement, the Company may elect to assume and perform Subco’s redemption obligations by effecting the exchange of SubCo Units for common stock (or the cash settlement amount) through a direct exchange of such common stock (or cash settlement amount) with a redeeming member of Subco in exchange for such member’s SubCo Units on a one-for-onebasis (subject to certain proportionate adjustments) (a “Direct Exchange”). The Company expects to elect to assume and perform Subco’s redemption obligations by way of Direct Exchanges for common stock pursuant to which the Shares registered pursuant to the Prospectus Supplement may be issued from time to time. The Prospectus Supplement was filed to supplement and amend the base prospectus, dated March 21, 2025, which together form a part of the Company’s existing automatic shelf registration statement on Form S-3ASR(FileNo. 333-286025), filed by the Company with the SEC on March 21, 2025, and effective upon that filing."
+    },
+    {
+      "code": "Item 9.01",
+      "text": "Item 9.01. Financial Statements and Exhibits. (d) Exhibits Exhibit Description Number ─────────────────────────────────────────────────────────────────────────────────────────────── 5.1 Opinion of Skadden, Arps, Slate, Meagher & Flom LLP. 23.1 Consent of Skadden, Arps, Slate, Meagher & Flom LLP (included in Exhibit 5.1). 104 Cover Page Interactive Data File (embedded within the Inline XBRL document). SIGNATURES Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned hereunto duly authorized. BlackRock, Inc. (Registrant) By: /s/ R. Andrew Dickson III Name: R. Andrew Dickson III Title: Managing Director and Corporate Secretary Date: June 30, 2026"
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 0,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "d108689d8k.htm",
+      "document_type": "8-K",
+      "description": "8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "d108689dex51.htm",
+      "document_type": "EX-5.1",
+      "description": "EX-5.1",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "blk35-20260630.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL TAXONOMY EXTENSION SCHEMA",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "blk35-20260630_def.xml",
+      "document_type": "EX-101.DEF",
+      "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "5",
+      "document": "blk35-20260630_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "6",
+      "document": "blk35-20260630_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "8",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "Document and Entity Information"
+    },
+    {
+      "sequence_number": "9",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "10",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "12",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "14",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "15",
+      "document": "0001193125-26-290830-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "16",
+      "document": "d108689d8k_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

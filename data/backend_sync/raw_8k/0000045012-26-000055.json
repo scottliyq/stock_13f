@@ -2,5 +2,101 @@
   "ticker": "HAL",
   "form": "8-K",
   "filing_date": "2026-06-29",
-  "company_name": "HALLIBURTON CO"
+  "company_name": "HALLIBURTON CO",
+  "accession_number": "0000045012-26-000055",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/45012/0000045012-26-000055-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/45012/000004501226000055/0000045012-26-000055.txt",
+  "period_of_report": "2026-06-24",
+  "date_of_report": "June 24, 2026",
+  "item_codes": [
+    "Item 8.01"
+  ],
+  "items": [
+    {
+      "code": "Item 8.01",
+      "text": "Item 8.01 . Other Information . On June 25, 2026, Halliburton Company (“Halliburton”) was notified of the death of Mr. Abdulaziz F. Al Khayyal on June 24, 2026. Mr. Al Khayyal served as a distinguished member of the Halliburton Board of Directors since 2014, and he will be greatly missed. He served on the Audit Committee and the Health, Safety and Environment Committee at the time of his death. SIGNATURES Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned hereunto duly authorized. HALLIBURTON COMPANY By: /s/ Pamela L. Taylor Pamela L. Taylor Vice President, Public Law and Assistant Secretary"
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 0,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "hal-20260624.htm",
+      "document_type": "8-K",
+      "description": "8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "hal-20260624.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL TAXONOMY EXTENSION SCHEMA DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "hal-20260624_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "hal-20260624_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "6",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "DEI Document"
+    },
+    {
+      "sequence_number": "7",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "8",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "10",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "13",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "14",
+      "document": "0000045012-26-000055-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "15",
+      "document": "hal-20260624_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

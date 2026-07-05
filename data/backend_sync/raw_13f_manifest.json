@@ -8,6 +8,9 @@
     "2025-09-30",
     "2025-06-30"
   ],
-  "row_count": 2299,
+  "row_count": 2300,
+  "manager_rebalance_summary_count": 38,
+  "manager_rebalance_detail_count": 4968,
+  "manager_security_latest_count": 4567,
   "output_paths": []
 }

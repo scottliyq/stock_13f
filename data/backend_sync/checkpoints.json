@@ -2,11 +2,13 @@
   "sync-13f": {
     "job_name": "sync-13f",
     "status": "success",
-    "started_at": "2026-07-03T11:50:45.581445+00:00",
-    "finished_at": "2026-07-03T12:00:10.780541+00:00",
-    "rows_written": 2299,
+    "started_at": "2026-07-05T11:09:27.850176+00:00",
+    "finished_at": "2026-07-05T11:25:32.000311+00:00",
+    "rows_written": 11873,
     "checkpoints_updated": 1,
-    "warnings": [],
+    "warnings": [
+      "enrich_openfigi added 546 cusip mappings for this sync run."
+    ],
     "error_summary": "",
     "details": {
       "latest_report_date": "2026-03-31",
@@ -18,7 +20,10 @@
         "2025-09-30",
         "2025-06-30"
       ],
-      "row_count": 2299,
+      "row_count": 2300,
+      "manager_rebalance_summary_count": 38,
+      "manager_rebalance_detail_count": 4968,
+      "manager_security_latest_count": 4567,
       "output_paths": []
     },
     "cursor": {
@@ -29,310 +34,38 @@
   "sync-8k": {
     "job_name": "sync-8k",
     "status": "success",
-    "started_at": "2026-07-03T11:05:39.239661+00:00",
-    "finished_at": "2026-07-03T11:11:12.685151+00:00",
-    "rows_written": 25,
+    "started_at": "2026-07-03T14:00:14.708574+00:00",
+    "finished_at": "2026-07-03T14:00:35.598183+00:00",
+    "rows_written": 11,
     "checkpoints_updated": 1,
-    "warnings": [
-      "Ticker could not be resolved by edgartools: BLCR"
-    ],
+    "warnings": [],
     "error_summary": "",
     "details": {
       "tickers": [
-        "AAPL",
-        "ABBV",
-        "ABT",
-        "ADBE",
-        "ADI",
-        "ADP",
-        "AMAT",
-        "AMCR",
-        "AMD",
-        "AMGN",
-        "AMZN",
-        "ANET",
-        "APH",
-        "APP",
-        "ASML",
-        "AVGO",
-        "AXP",
-        "AZN",
-        "BA",
-        "BAC",
-        "BKNG",
-        "BLCR",
-        "BLK",
-        "BMY",
-        "BRK.B",
-        "BSX",
-        "BX",
-        "C",
-        "CAT",
-        "CCL",
-        "CDNS",
-        "CEG",
-        "CIEN",
-        "CMCSA",
-        "COF",
-        "COHR",
-        "COP",
-        "COST",
-        "CRM",
-        "CRWD",
-        "CSCO",
-        "CVS",
-        "CVX",
-        "DE",
-        "DELL",
-        "DHR",
-        "DIS",
-        "DOW",
-        "EMR",
-        "EOG",
-        "FCX",
-        "FDX",
-        "GE",
-        "GEV",
-        "GILD",
-        "GLW",
-        "GM",
-        "GOOGL",
-        "GS",
-        "HAL",
-        "HD",
-        "IBM",
-        "ICE",
-        "INTC",
-        "INTU",
-        "ISRG",
-        "JNJ",
-        "JPM",
-        "KLAC",
-        "KMI",
-        "KO",
-        "LITE",
-        "LLY",
-        "LMT",
-        "LNG",
-        "LOW",
-        "LRCX",
-        "MA",
-        "MCD",
-        "MELI",
-        "META",
-        "MO",
-        "MPC",
-        "MRK",
-        "MRSH",
-        "MRVL",
-        "MS",
-        "MSFT",
-        "MU",
-        "NEE",
-        "NEM",
-        "NFLX",
-        "NOW",
-        "NSC",
-        "NVDA",
-        "ORCL",
-        "OXY",
-        "PANW",
-        "PEP",
-        "PFE",
-        "PG",
-        "PGR",
-        "PH",
-        "PIPR",
-        "PLD",
-        "PLTR",
-        "PM",
-        "PNFP",
-        "PSX",
-        "PWR",
-        "Q",
-        "QCOM",
-        "RTX",
-        "RY",
-        "SCHW",
         "SHOP",
-        "SNDK",
-        "SOLS",
-        "SPGI",
-        "SUNB",
-        "SYK",
-        "T",
-        "TER",
-        "TGT",
-        "TJX",
-        "TMO",
+        "NVDA",
+        "AMD",
         "TSLA",
-        "TSM",
-        "TXN",
-        "UBER",
-        "UNH",
-        "UNP",
-        "V",
-        "VLO",
-        "VRT",
-        "VRTX",
-        "VSNT",
-        "VZ",
-        "WAT",
-        "WDC",
-        "WELL",
-        "WFC",
-        "WMB",
-        "WMT",
+        "SPGI",
+        "LNG",
+        "ADI",
+        "PLD",
+        "DELL",
         "XOM"
       ],
       "universe_source": "movers"
     },
     "cursor": {
       "tickers": [
-        "AAPL",
-        "ABBV",
-        "ABT",
-        "ADBE",
-        "ADI",
-        "ADP",
-        "AMAT",
-        "AMCR",
-        "AMD",
-        "AMGN",
-        "AMZN",
-        "ANET",
-        "APH",
-        "APP",
-        "ASML",
-        "AVGO",
-        "AXP",
-        "AZN",
-        "BA",
-        "BAC",
-        "BKNG",
-        "BLCR",
-        "BLK",
-        "BMY",
-        "BRK.B",
-        "BSX",
-        "BX",
-        "C",
-        "CAT",
-        "CCL",
-        "CDNS",
-        "CEG",
-        "CIEN",
-        "CMCSA",
-        "COF",
-        "COHR",
-        "COP",
-        "COST",
-        "CRM",
-        "CRWD",
-        "CSCO",
-        "CVS",
-        "CVX",
-        "DE",
-        "DELL",
-        "DHR",
-        "DIS",
-        "DOW",
-        "EMR",
-        "EOG",
-        "FCX",
-        "FDX",
-        "GE",
-        "GEV",
-        "GILD",
-        "GLW",
-        "GM",
-        "GOOGL",
-        "GS",
-        "HAL",
-        "HD",
-        "IBM",
-        "ICE",
-        "INTC",
-        "INTU",
-        "ISRG",
-        "JNJ",
-        "JPM",
-        "KLAC",
-        "KMI",
-        "KO",
-        "LITE",
-        "LLY",
-        "LMT",
-        "LNG",
-        "LOW",
-        "LRCX",
-        "MA",
-        "MCD",
-        "MELI",
-        "META",
-        "MO",
-        "MPC",
-        "MRK",
-        "MRSH",
-        "MRVL",
-        "MS",
-        "MSFT",
-        "MU",
-        "NEE",
-        "NEM",
-        "NFLX",
-        "NOW",
-        "NSC",
-        "NVDA",
-        "ORCL",
-        "OXY",
-        "PANW",
-        "PEP",
-        "PFE",
-        "PG",
-        "PGR",
-        "PH",
-        "PIPR",
-        "PLD",
-        "PLTR",
-        "PM",
-        "PNFP",
-        "PSX",
-        "PWR",
-        "Q",
-        "QCOM",
-        "RTX",
-        "RY",
-        "SCHW",
         "SHOP",
-        "SNDK",
-        "SOLS",
-        "SPGI",
-        "SUNB",
-        "SYK",
-        "T",
-        "TER",
-        "TGT",
-        "TJX",
-        "TMO",
+        "NVDA",
+        "AMD",
         "TSLA",
-        "TSM",
-        "TXN",
-        "UBER",
-        "UNH",
-        "UNP",
-        "V",
-        "VLO",
-        "VRT",
-        "VRTX",
-        "VSNT",
-        "VZ",
-        "WAT",
-        "WDC",
-        "WELL",
-        "WFC",
-        "WMB",
-        "WMT",
+        "SPGI",
+        "LNG",
+        "ADI",
+        "PLD",
+        "DELL",
         "XOM"
       ]
     }
@@ -340,8 +73,8 @@
   "rebuild-marts": {
     "job_name": "rebuild-marts",
     "status": "success",
-    "started_at": "2026-07-03T12:00:54.037391+00:00",
-    "finished_at": "2026-07-03T12:00:55.394360+00:00",
+    "started_at": "2026-07-03T16:36:48.507549+00:00",
+    "finished_at": "2026-07-03T16:36:49.984806+00:00",
     "rows_written": 26,
     "checkpoints_updated": 1,
     "warnings": [],
@@ -358,399 +91,620 @@
   "sync-13dg": {
     "job_name": "sync-13dg",
     "status": "success",
-    "started_at": "2026-07-03T11:12:44.588444+00:00",
-    "finished_at": "2026-07-03T11:20:55.196493+00:00",
-    "rows_written": 0,
+    "started_at": "2026-07-05T05:38:55.344164+00:00",
+    "finished_at": "2026-07-05T05:38:59.491715+00:00",
+    "rows_written": 4,
     "checkpoints_updated": 1,
-    "warnings": [
-      "Ticker could not be resolved by edgartools: BAI",
-      "Ticker could not be resolved by edgartools: BLCR"
-    ],
+    "warnings": [],
     "error_summary": "",
     "details": {
-      "tickers": [
-        "AAPL",
-        "ABBV",
-        "ABT",
-        "ADBE",
-        "ADI",
-        "ADP",
-        "ALAB",
-        "ALNY",
-        "AMAT",
-        "AMCR",
-        "AMD",
-        "AMGN",
-        "AMZN",
-        "ANET",
-        "APH",
-        "APP",
-        "ASML",
-        "AVGO",
-        "AXON",
-        "AXP",
-        "AZN",
-        "BA",
-        "BABA",
-        "BAC",
-        "BAI",
-        "BE",
-        "BKNG",
-        "BLCR",
-        "BLK",
-        "BMNR",
-        "BMY",
-        "BPRE",
-        "BRK.B",
-        "BSX",
-        "BX",
-        "C",
-        "CAT",
-        "CCL",
-        "CDNS",
-        "CEG",
-        "CIEN",
-        "CMCSA",
-        "CMI",
-        "COF",
-        "COHR",
-        "COIN",
-        "COP",
-        "COST",
-        "CRM",
-        "CRWD",
-        "CRWV",
-        "CSCO",
-        "CVS",
-        "CVX",
-        "DASH",
-        "DE",
-        "DELL",
-        "DHI",
-        "DHR",
-        "DIS",
-        "DOW",
-        "EMR",
-        "EOG",
-        "FCX",
-        "FDX",
-        "FIX",
-        "FNF",
-        "GD",
-        "GE",
-        "GEV",
-        "GILD",
-        "GLW",
-        "GM",
-        "GOLD",
-        "GOOGL",
-        "GS",
-        "HAL",
-        "HD",
-        "HOOD",
-        "HWM",
-        "IBM",
-        "ICE",
-        "INTC",
-        "INTU",
-        "ISRG",
-        "JNJ",
-        "JPM",
-        "KLAC",
-        "KMI",
-        "KO",
-        "LCID",
-        "LITE",
-        "LLY",
-        "LMT",
-        "LNG",
-        "LOW",
-        "LRCX",
-        "MA",
-        "MCD",
-        "MCK",
-        "MELI",
-        "META",
-        "MO",
-        "MPC",
-        "MRK",
-        "MRSH",
-        "MRVL",
-        "MS",
-        "MSFT",
-        "MSTR",
-        "MU",
-        "NEE",
-        "NEM",
-        "NFLX",
-        "NOC",
-        "NOW",
-        "NRG",
-        "NSC",
-        "NVDA",
-        "ORCL",
-        "OXY",
-        "PANW",
-        "PENG",
-        "PEP",
-        "PFE",
-        "PG",
-        "PGR",
-        "PH",
-        "PIPR",
-        "PLD",
-        "PLTR",
-        "PM",
-        "PNFP",
-        "PSKY",
-        "PSX",
-        "PWR",
-        "Q",
-        "QCOM",
-        "RAL",
-        "RDDT",
-        "RKLB",
-        "RKT",
-        "RTX",
-        "RY",
-        "SCHW",
-        "SHOP",
-        "SNDK",
-        "SNOW",
-        "SNPS",
-        "SOFI",
-        "SOLS",
-        "SPGI",
-        "SRLN",
-        "SSB",
-        "SUNB",
-        "SYK",
-        "T",
-        "TER",
-        "TGT",
-        "TJX",
-        "TMO",
-        "TMUS",
-        "TSLA",
-        "TSM",
-        "TTE",
-        "TXN",
-        "UBER",
-        "UL",
-        "UNH",
-        "UNP",
-        "UPS",
-        "V",
-        "VLO",
-        "VNOM",
-        "VRT",
-        "VRTX",
-        "VSNT",
-        "VST",
-        "VZ",
-        "WAT",
-        "WBD",
-        "WDC",
-        "WELL",
-        "WFC",
-        "WMB",
-        "WMT",
-        "XOM",
-        "ZS"
+      "mode": "manager",
+      "tickers": [],
+      "manager_ciks": [
+        "2045724"
       ],
-      "universe_source": "dim"
+      "universe_source": "dim",
+      "form_scope": "all"
     },
     "cursor": {
-      "tickers": [
-        "AAPL",
-        "ABBV",
-        "ABT",
-        "ADBE",
-        "ADI",
-        "ADP",
-        "ALAB",
-        "ALNY",
-        "AMAT",
-        "AMCR",
-        "AMD",
-        "AMGN",
-        "AMZN",
-        "ANET",
-        "APH",
-        "APP",
-        "ASML",
-        "AVGO",
-        "AXON",
-        "AXP",
-        "AZN",
-        "BA",
-        "BABA",
-        "BAC",
-        "BAI",
-        "BE",
-        "BKNG",
-        "BLCR",
-        "BLK",
-        "BMNR",
-        "BMY",
-        "BPRE",
-        "BRK.B",
-        "BSX",
-        "BX",
-        "C",
-        "CAT",
-        "CCL",
-        "CDNS",
-        "CEG",
-        "CIEN",
-        "CMCSA",
-        "CMI",
-        "COF",
-        "COHR",
-        "COIN",
-        "COP",
-        "COST",
-        "CRM",
-        "CRWD",
-        "CRWV",
-        "CSCO",
-        "CVS",
-        "CVX",
-        "DASH",
-        "DE",
-        "DELL",
-        "DHI",
-        "DHR",
-        "DIS",
-        "DOW",
-        "EMR",
-        "EOG",
-        "FCX",
-        "FDX",
-        "FIX",
-        "FNF",
-        "GD",
-        "GE",
-        "GEV",
-        "GILD",
-        "GLW",
-        "GM",
-        "GOLD",
-        "GOOGL",
-        "GS",
-        "HAL",
-        "HD",
-        "HOOD",
-        "HWM",
-        "IBM",
-        "ICE",
-        "INTC",
-        "INTU",
-        "ISRG",
-        "JNJ",
-        "JPM",
-        "KLAC",
-        "KMI",
-        "KO",
-        "LCID",
-        "LITE",
-        "LLY",
-        "LMT",
-        "LNG",
-        "LOW",
-        "LRCX",
-        "MA",
-        "MCD",
-        "MCK",
-        "MELI",
-        "META",
-        "MO",
-        "MPC",
-        "MRK",
-        "MRSH",
-        "MRVL",
-        "MS",
-        "MSFT",
-        "MSTR",
-        "MU",
-        "NEE",
-        "NEM",
-        "NFLX",
-        "NOC",
-        "NOW",
-        "NRG",
-        "NSC",
-        "NVDA",
-        "ORCL",
-        "OXY",
-        "PANW",
-        "PENG",
-        "PEP",
-        "PFE",
-        "PG",
-        "PGR",
-        "PH",
-        "PIPR",
-        "PLD",
-        "PLTR",
-        "PM",
-        "PNFP",
-        "PSKY",
-        "PSX",
-        "PWR",
-        "Q",
-        "QCOM",
-        "RAL",
-        "RDDT",
-        "RKLB",
-        "RKT",
-        "RTX",
-        "RY",
-        "SCHW",
-        "SHOP",
-        "SNDK",
-        "SNOW",
-        "SNPS",
-        "SOFI",
-        "SOLS",
-        "SPGI",
-        "SRLN",
-        "SSB",
-        "SUNB",
-        "SYK",
-        "T",
-        "TER",
-        "TGT",
-        "TJX",
-        "TMO",
-        "TMUS",
-        "TSLA",
-        "TSM",
-        "TTE",
-        "TXN",
-        "UBER",
-        "UL",
-        "UNH",
-        "UNP",
-        "UPS",
-        "V",
-        "VLO",
-        "VNOM",
-        "VRT",
-        "VRTX",
-        "VSNT",
-        "VST",
-        "VZ",
-        "WAT",
-        "WBD",
-        "WDC",
-        "WELL",
-        "WFC",
-        "WMB",
-        "WMT",
-        "XOM",
-        "ZS"
+      "mode": "manager",
+      "manager_ciks": [
+        "2045724"
       ]
+    }
+  },
+  "audit-13dg-coverage": {
+    "job_name": "audit-13dg-coverage",
+    "status": "success",
+    "started_at": "2026-07-05T05:08:23.443719+00:00",
+    "finished_at": "2026-07-05T05:08:29.548163+00:00",
+    "rows_written": 0,
+    "checkpoints_updated": 1,
+    "warnings": [],
+    "error_summary": "",
+    "details": {
+      "manager_ciks": [
+        "1336528",
+        "1006438",
+        "2045724",
+        "2053242",
+        "1697748",
+        "1569049",
+        "1135730",
+        "1835751",
+        "1759760",
+        "934639",
+        "1908066"
+      ],
+      "audited_filing_count": 32,
+      "gap_count": 0,
+      "missing_rows": []
+    },
+    "cursor": {
+      "manager_ciks": [
+        "1336528",
+        "1006438",
+        "2045724",
+        "2053242",
+        "1697748",
+        "1569049",
+        "1135730",
+        "1835751",
+        "1759760",
+        "934639",
+        "1908066"
+      ],
+      "mode": "manager"
+    }
+  },
+  "backfill-tickers": {
+    "job_name": "backfill-tickers",
+    "status": "success",
+    "started_at": "2026-07-05T11:34:42.666868+00:00",
+    "finished_at": "2026-07-05T11:34:59.923032+00:00",
+    "rows_written": 11834,
+    "checkpoints_updated": 1,
+    "warnings": [],
+    "error_summary": "",
+    "details": {
+      "before_missing": {
+        "mart_13f_quarterly_movers": {
+          "missing_count": 0,
+          "samples": []
+        },
+        "mart_manager_rebalance_detail": {
+          "missing_count": 79,
+          "samples": [
+            {
+              "cusip": "G8060N102",
+              "issuer": "SENSATA TECHNOLOGIES HLDG PL"
+            },
+            {
+              "cusip": "G25508105",
+              "issuer": "CRH PLC"
+            },
+            {
+              "cusip": "G4863A108",
+              "issuer": "INTERNATIONAL GAME TECHNOLOG - SHS USD"
+            },
+            {
+              "cusip": "L8681T102",
+              "issuer": "Spotify Technology SA"
+            },
+            {
+              "cusip": "Q90630114",
+              "issuer": "Titomic Ltd"
+            },
+            {
+              "cusip": "G6683N103",
+              "issuer": "NU Holdings Ltd/Cayman Islands"
+            },
+            {
+              "cusip": "M1500S107",
+              "issuer": "Aryt Industries Ltd"
+            },
+            {
+              "cusip": "M82363124",
+              "issuer": "SatixFy Communications Ltd"
+            },
+            {
+              "cusip": "M61452112",
+              "issuer": "Isrotel Ltd"
+            },
+            {
+              "cusip": "M20791105",
+              "issuer": "Camtek Ltd/Israel"
+            },
+            {
+              "cusip": "M22465104",
+              "issuer": "Check Point Software Technolog"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            },
+            {
+              "cusip": "M2682V108",
+              "issuer": "CyberArk Software Ltd"
+            },
+            {
+              "cusip": "57064N201",
+              "issuer": "Markforged Holding Corp"
+            },
+            {
+              "cusip": "M97628107",
+              "issuer": "WalkMe Ltd"
+            },
+            {
+              "cusip": "B9151N105",
+              "issuer": "TITAN AMER SA - COMMON SHARES"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            },
+            {
+              "cusip": "G50871105",
+              "issuer": "JAZZ PHARMACEUTICALS PLC - SHS USD"
+            },
+            {
+              "cusip": "67623C109",
+              "issuer": "OFFICE PPTYS INCOME TR - COM SHS BEN INT"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            }
+          ]
+        },
+        "mart_manager_security_latest": {
+          "missing_count": 72,
+          "samples": [
+            {
+              "cusip": "G25508105",
+              "issuer": "CRH PLC"
+            },
+            {
+              "cusip": "G4863A108",
+              "issuer": "INTERNATIONAL GAME TECHNOLOG - SHS USD"
+            },
+            {
+              "cusip": "G8060N102",
+              "issuer": "SENSATA TECHNOLOGIES HLDG PL"
+            },
+            {
+              "cusip": "57064N201",
+              "issuer": "Markforged Holding Corp"
+            },
+            {
+              "cusip": "G6683N103",
+              "issuer": "NU Holdings Ltd/Cayman Islands"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            },
+            {
+              "cusip": "L8681T102",
+              "issuer": "Spotify Technology SA"
+            },
+            {
+              "cusip": "M1500S107",
+              "issuer": "Aryt Industries Ltd"
+            },
+            {
+              "cusip": "M20791105",
+              "issuer": "Camtek Ltd/Israel"
+            },
+            {
+              "cusip": "M22465104",
+              "issuer": "Check Point Software Technolog"
+            },
+            {
+              "cusip": "M2682V108",
+              "issuer": "CyberArk Software Ltd"
+            },
+            {
+              "cusip": "M61452112",
+              "issuer": "Isrotel Ltd"
+            },
+            {
+              "cusip": "M82363124",
+              "issuer": "SatixFy Communications Ltd"
+            },
+            {
+              "cusip": "M97628107",
+              "issuer": "WalkMe Ltd"
+            },
+            {
+              "cusip": "Q90630114",
+              "issuer": "Titomic Ltd"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            },
+            {
+              "cusip": "527064109",
+              "issuer": "LESLIES INC"
+            },
+            {
+              "cusip": "67623C109",
+              "issuer": "OFFICE PPTYS INCOME TR - COM SHS BEN INT"
+            },
+            {
+              "cusip": "B9151N105",
+              "issuer": "TITAN AMER SA - COMMON SHARES"
+            },
+            {
+              "cusip": "G25508105",
+              "issuer": "CRH PLC"
+            }
+          ]
+        }
+      },
+      "after_missing": {
+        "mart_13f_quarterly_movers": {
+          "missing_count": 0,
+          "samples": []
+        },
+        "mart_manager_rebalance_detail": {
+          "missing_count": 42,
+          "samples": [
+            {
+              "cusip": "G4863A108",
+              "issuer": "INTERNATIONAL GAME TECHNOLOG - SHS USD"
+            },
+            {
+              "cusip": "Q90630114",
+              "issuer": "Titomic Ltd"
+            },
+            {
+              "cusip": "M1500S107",
+              "issuer": "Aryt Industries Ltd"
+            },
+            {
+              "cusip": "M82363124",
+              "issuer": "SatixFy Communications Ltd"
+            },
+            {
+              "cusip": "M61452112",
+              "issuer": "Isrotel Ltd"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            },
+            {
+              "cusip": "M2682V108",
+              "issuer": "CyberArk Software Ltd"
+            },
+            {
+              "cusip": "57064N201",
+              "issuer": "Markforged Holding Corp"
+            },
+            {
+              "cusip": "M97628107",
+              "issuer": "WalkMe Ltd"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            },
+            {
+              "cusip": "G60409110",
+              "issuer": "MAC COPPER LIMITED"
+            },
+            {
+              "cusip": "G4863A108",
+              "issuer": "INTERNATIONAL GAME TECHNOLOG - SHS USD"
+            },
+            {
+              "cusip": "N0731H103",
+              "issuer": "ATAI Life Sciences NV"
+            },
+            {
+              "cusip": "M82363124",
+              "issuer": "SatixFy Communications Ltd"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            },
+            {
+              "cusip": "M2682V108",
+              "issuer": "CyberArk Software Ltd"
+            },
+            {
+              "cusip": "60646V105",
+              "issuer": "MISTER CAR WASH INC"
+            },
+            {
+              "cusip": "G60409110",
+              "issuer": "MAC COPPER LIMITED"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            }
+          ]
+        },
+        "mart_manager_security_latest": {
+          "missing_count": 37,
+          "samples": [
+            {
+              "cusip": "G4863A108",
+              "issuer": "INTERNATIONAL GAME TECHNOLOG - SHS USD"
+            },
+            {
+              "cusip": "57064N201",
+              "issuer": "Markforged Holding Corp"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            },
+            {
+              "cusip": "M1500S107",
+              "issuer": "Aryt Industries Ltd"
+            },
+            {
+              "cusip": "M2682V108",
+              "issuer": "CyberArk Software Ltd"
+            },
+            {
+              "cusip": "M61452112",
+              "issuer": "Isrotel Ltd"
+            },
+            {
+              "cusip": "M82363124",
+              "issuer": "SatixFy Communications Ltd"
+            },
+            {
+              "cusip": "M97628107",
+              "issuer": "WalkMe Ltd"
+            },
+            {
+              "cusip": "Q90630114",
+              "issuer": "Titomic Ltd"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            },
+            {
+              "cusip": "G60409110",
+              "issuer": "MAC COPPER LIMITED"
+            },
+            {
+              "cusip": "G4863A108",
+              "issuer": "INTERNATIONAL GAME TECHNOLOG - SHS USD"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            },
+            {
+              "cusip": "M2682V108",
+              "issuer": "CyberArk Software Ltd"
+            },
+            {
+              "cusip": "M82363124",
+              "issuer": "SatixFy Communications Ltd"
+            },
+            {
+              "cusip": "N0731H103",
+              "issuer": "ATAI Life Sciences NV"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            },
+            {
+              "cusip": "60646V105",
+              "issuer": "MISTER CAR WASH INC"
+            },
+            {
+              "cusip": "G60409110",
+              "issuer": "MAC COPPER LIMITED"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            }
+          ]
+        }
+      },
+      "resolution_stats": {
+        "mart_13f_quarterly_movers": {
+          "updated": 0,
+          "deduped": 0,
+          "remaining_unresolved": 0,
+          "samples": []
+        },
+        "mart_manager_rebalance_detail": {
+          "updated": 37,
+          "deduped": 0,
+          "remaining_unresolved": 42,
+          "samples": [
+            {
+              "cusip": "G4863A108",
+              "issuer": "INTERNATIONAL GAME TECHNOLOG - SHS USD"
+            },
+            {
+              "cusip": "Q90630114",
+              "issuer": "Titomic Ltd"
+            },
+            {
+              "cusip": "M1500S107",
+              "issuer": "Aryt Industries Ltd"
+            },
+            {
+              "cusip": "M82363124",
+              "issuer": "SatixFy Communications Ltd"
+            },
+            {
+              "cusip": "M61452112",
+              "issuer": "Isrotel Ltd"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            },
+            {
+              "cusip": "M2682V108",
+              "issuer": "CyberArk Software Ltd"
+            },
+            {
+              "cusip": "57064N201",
+              "issuer": "Markforged Holding Corp"
+            },
+            {
+              "cusip": "M97628107",
+              "issuer": "WalkMe Ltd"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            },
+            {
+              "cusip": "G60409110",
+              "issuer": "MAC COPPER LIMITED"
+            },
+            {
+              "cusip": "G4863A108",
+              "issuer": "INTERNATIONAL GAME TECHNOLOG - SHS USD"
+            },
+            {
+              "cusip": "N0731H103",
+              "issuer": "ATAI Life Sciences NV"
+            },
+            {
+              "cusip": "M82363124",
+              "issuer": "SatixFy Communications Ltd"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            },
+            {
+              "cusip": "M2682V108",
+              "issuer": "CyberArk Software Ltd"
+            },
+            {
+              "cusip": "60646V105",
+              "issuer": "MISTER CAR WASH INC"
+            },
+            {
+              "cusip": "G60409110",
+              "issuer": "MAC COPPER LIMITED"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            }
+          ]
+        },
+        "mart_manager_security_latest": {
+          "updated": 35,
+          "deduped": 0,
+          "remaining_unresolved": 37,
+          "samples": [
+            {
+              "cusip": "G4863A108",
+              "issuer": "INTERNATIONAL GAME TECHNOLOG - SHS USD"
+            },
+            {
+              "cusip": "57064N201",
+              "issuer": "Markforged Holding Corp"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            },
+            {
+              "cusip": "M1500S107",
+              "issuer": "Aryt Industries Ltd"
+            },
+            {
+              "cusip": "M2682V108",
+              "issuer": "CyberArk Software Ltd"
+            },
+            {
+              "cusip": "M61452112",
+              "issuer": "Isrotel Ltd"
+            },
+            {
+              "cusip": "M82363124",
+              "issuer": "SatixFy Communications Ltd"
+            },
+            {
+              "cusip": "M97628107",
+              "issuer": "WalkMe Ltd"
+            },
+            {
+              "cusip": "Q90630114",
+              "issuer": "Titomic Ltd"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            },
+            {
+              "cusip": "G60409110",
+              "issuer": "MAC COPPER LIMITED"
+            },
+            {
+              "cusip": "G4863A108",
+              "issuer": "INTERNATIONAL GAME TECHNOLOG - SHS USD"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            },
+            {
+              "cusip": "M2682V108",
+              "issuer": "CyberArk Software Ltd"
+            },
+            {
+              "cusip": "M82363124",
+              "issuer": "SatixFy Communications Ltd"
+            },
+            {
+              "cusip": "N0731H103",
+              "issuer": "ATAI Life Sciences NV"
+            },
+            {
+              "cusip": "128246105",
+              "issuer": "CALAVO GROWERS INC"
+            },
+            {
+              "cusip": "60646V105",
+              "issuer": "MISTER CAR WASH INC"
+            },
+            {
+              "cusip": "G60409110",
+              "issuer": "MAC COPPER LIMITED"
+            },
+            {
+              "cusip": "G7T16G103",
+              "issuer": "Sapiens International Corp NV"
+            }
+          ]
+        }
+      },
+      "openfigi_mappings_added": 0
+    },
+    "cursor": {
+      "job": "backfill-tickers"
     }
   }
 }

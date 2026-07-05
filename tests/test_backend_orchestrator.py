@@ -9,6 +9,7 @@ SRC_DIR = REPO_ROOT / "src"
 sys.path.insert(0, str(SRC_DIR))
 
 from stock_13f.core.settings import Settings
+from stock_13f.domain.sync_requests import BackfillTickersRequest
 from stock_13f.domain.sync_requests import SyncAllRequest
 from stock_13f.domain.sync_results import SyncResult
 from stock_13f.repositories.checkpoints import CheckpointRepository
@@ -27,6 +28,9 @@ class FakeService:
         return SyncResult.success(self.job_name, started_at, rows_written=1, checkpoints_updated=1)
 
     def rebuild(self, request) -> SyncResult:
+        return self.sync(request)
+
+    def backfill(self, request) -> SyncResult:
         return self.sync(request)
 
 
@@ -69,3 +73,24 @@ def test_sync_all_honors_fail_fast(tmp_path: Path, monkeypatch) -> None:
     assert result.status == "failed"
     step_names = [step["job_name"] for step in result.details["steps"]]
     assert step_names == ["sync-13f", "sync-8k"]
+
+
+def test_backfill_tickers_routes_to_service(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("EDGAR_IDENTITY", "Tester tester@example.com")
+    settings = Settings.load()
+    checkpoints = CheckpointRepository(tmp_path / "checkpoints.json")
+    fake_backfill_service = FakeService("backfill-tickers")
+    orchestrator = BackendOrchestrator(
+        settings=settings,
+        checkpoints=checkpoints,
+        thirteenf_service=FakeService("sync-13f"),
+        eightk_service=FakeService("sync-8k"),
+        thirteendg_service=FakeService("sync-13dg"),
+        marts_service=FakeService("rebuild-marts"),
+        ticker_backfill_service=fake_backfill_service,
+    )
+
+    result = orchestrator.backfill_tickers(BackfillTickersRequest())
+
+    assert result.status == "success"
+    assert result.job_name == "backfill-tickers"

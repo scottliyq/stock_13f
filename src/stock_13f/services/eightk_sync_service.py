@@ -87,15 +87,25 @@ class EightKSyncService:
                     warnings.append(str(exc))
                     continue
                 for filing in filings:
-                    accession_number = getattr(filing, "accession_number", None) or getattr(
-                        filing, "accession_no", "unknown-accession"
+                    accession_number = str(
+                        getattr(filing, "accession_number", None) or getattr(filing, "accession_no", "unknown-accession")
                     )
-                    payload = {
-                        "ticker": ticker,
-                        "form": getattr(filing, "form", ""),
-                        "filing_date": str(getattr(filing, "filing_date", "")),
-                        "company_name": getattr(filing, "company", "") or getattr(filing, "company_name", ""),
-                    }
+                    try:
+                        payload = self._edgar_client.build_8k_payload(filing, ticker)
+                    except (AttributeError, KeyError, OSError, RuntimeError, TypeError, ValueError) as exc:
+                        warnings.append(f"8-K parse fallback for {ticker} {accession_number}: {exc}")
+                        payload = {
+                            "ticker": ticker,
+                            "form": getattr(filing, "form", ""),
+                            "filing_date": str(getattr(filing, "filing_date", "")),
+                            "company_name": getattr(filing, "company", "") or getattr(filing, "company_name", ""),
+                            "accession_number": accession_number,
+                            "item_codes": [],
+                            "items": [],
+                            "exhibits": [],
+                            "has_press_release": False,
+                            "has_earnings": False,
+                        }
                     self._raw_repository.upsert_record(str(accession_number), payload)
                     records_written += 1
             LOGGER.info("sync_8k_completed", extra={"rows_written": records_written})

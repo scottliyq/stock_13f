@@ -2,5 +2,153 @@
   "ticker": "SPGI",
   "form": "8-K",
   "filing_date": "2026-07-02",
-  "company_name": "S&P Global Inc."
+  "company_name": "S&P Global Inc.",
+  "accession_number": "0001104659-26-080005",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/64040/0001104659-26-080005-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/64040/000110465926080005/0001104659-26-080005.txt",
+  "period_of_report": "2026-06-30",
+  "date_of_report": "June 30, 2026",
+  "item_codes": [
+    "Item 8.01",
+    "Item 2.01",
+    "Item 9.01"
+  ],
+  "items": [
+    {
+      "code": "Item 8.01",
+      "text": "Item 8.01. Other Events. On July 1, 2026 S&P Global issued a press release announcing the completion of the Separation. The full text of the press release is filed as Exhibit 99.1 to this Current Report on Form 8-K and is incorporated by reference in this Item 8.01. Item 9.01. Financial Statements and Exhibits."
+    },
+    {
+      "code": "Item 2.01",
+      "text": "Item 2.01. Completion of Acquisition or Disposition of Assets. On the Distribution Date, S&P Global completed the previously-announced separation of Mobility Global. Effective as of 12:01 a.m. New York City time on the Distribution Date, the common stock of Mobility Global was distributed, on a pro rata basis, to S&P Global’s stockholders of record as of the close of business on the Record Date. On the Distribution Date, each of the stockholders of S&P Global received one share of Mobility Global common stock for every share of S&P Global’s common stock held by such stockholder on the Record Date. Fractional shares of Mobility Global common stock were not delivered in the Distribution. Any fractional share of Mobility Global common stock otherwise issuable to a S&P Global stockholder will be sold in the open market on such stockholder’s behalf, and such stockholder will receive a cash payment for the fractional share based on the stockholder’s pro rata portion of the net cash proceeds from sales of all fractional shares. The Separation was completed pursuant to the Separation and Distribution Agreement. The description of the Separation included under Item 1.01 of this Current Report on Form 8-K and the Separation and Distribution Agreement attached as Exhibit 2.1 to this Current Report on Form 8-K are incorporated by reference in this Item 2.01. Item 8.01. Other Events."
+    },
+    {
+      "code": "Item 9.01",
+      "text": "Item 9.01. Financial Statements and Exhibits. The pro forma financial information required by this item will be filed by amendment to this Current Report on Form 8-K not later than four business days after the Distribution Date. (d) Exhibits. Exhibit No. Description 2.1†+ Separation and Distribution Agreement between S&P Global Inc. and Mobility Global Inc., dated June 30, 2026. 10.1†+ Transition Services Agreement between S&P Global Inc. and Mobility Global Inc., dated June 30, 2026. 10.2†+ Tax Matters Agreement between S&P Global Inc. and Mobility Global Inc., dated June 30, 2026. 10.3† Employee Matters Agreement between S&P Global Inc. and Mobility Global Inc., dated June 30, 2026. 99.1 Press release issued by S&P Global Inc., dated July 1, 2026, announcing the completion of the Separation. ────────────────────────────────────────────────────────────────────────────────────────────────────────────── 104 Cover Page Interactive Data File (embedded within the † Certain schedules and exhibits to this agreement have been omitted pursuant to Item 601(a)(5) of Regulation S-K. A copy of any omitted schedule and/or exhibit will be furnished supplementally to the SEC upon request. + Certain personally identifiable information has been omitted from this exhibit pursuant to Item 601(a)(6) of Regulation S-K. SIGNATURES"
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 1,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "tm2619099d1_8k.htm",
+      "document_type": "8-K",
+      "description": "FORM 8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "tm2619099d1_ex2-1.htm",
+      "document_type": "EX-2.1",
+      "description": "EXHIBIT 2.1",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "tm2619099d1_ex10-1.htm",
+      "document_type": "EX-10.1",
+      "description": "EXHIBIT 10.1",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "tm2619099d1_ex10-2.htm",
+      "document_type": "EX-10.2",
+      "description": "EXHIBIT 10.2",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "5",
+      "document": "tm2619099d1_ex10-3.htm",
+      "document_type": "EX-10.3",
+      "description": "EXHIBIT 10.3",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "6",
+      "document": "tm2619099d1_ex99-1.htm",
+      "document_type": "EX-99.1",
+      "description": "EXHIBIT 99.1",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "7",
+      "document": "spgi-20260630.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL TAXONOMY EXTENSION SCHEMA",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "8",
+      "document": "spgi-20260630_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "9",
+      "document": "spgi-20260630_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "10",
+      "document": "tm2619099d1_ex99-1img001.jpg",
+      "document_type": "GRAPHIC",
+      "description": "GRAPHIC",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "12",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "Cover"
+    },
+    {
+      "sequence_number": "13",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "14",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "16",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "18",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "19",
+      "document": "0001104659-26-080005-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "20",
+      "document": "tm2619099d1_8k_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

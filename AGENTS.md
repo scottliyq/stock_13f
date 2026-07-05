@@ -1,5 +1,5 @@
 # AGENTS.md
-最后更新: 2026-07-02
+最后更新: 2026-07-05
 
 ## 本文件的作用
 
@@ -23,6 +23,9 @@ Python 版本：   3.12
 - 禁止在业务逻辑层直接 print()，使用 structlog
 - 始终使用markdown格式保存输出的报告
 - 使用Agent Reach 爬取x和reddit的数据
+- 修改记录统一写入根目录 `BACKLOG.md`
+- 不要在 `reports/` 顶层新增按日期命名的修改记录文件
+- `reports/` 仅用于研究产物、业务报告与数据导出，现有子目录按原用途保留
 
 
 强烈推荐的模式（AI 应优先考虑）：
@@ -53,7 +56,7 @@ from app.services import UserService
 - 使用终端执行任何项目相关操作
 
 你**必须**先执行以下检查/激活步骤之一，且**必须看到 (py312aiproxy)** 提示才可以继续：
-你**必须**每次收到对话需求后，先回答**yes sir** 才继续任务,每个不同的研究任务生成不同的独立的markdown文件
+你**必须**每次收到对话需求后，先回答**yes sir** 才继续任务, 每次代码改动更新BACKLOG.md
 
 ```bash
 conda activate py312aiproxy || echo "请先手动激活 py312aiproxy"

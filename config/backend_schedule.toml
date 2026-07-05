@@ -1,0 +1,121 @@
+[scheduler]
+timezone = "America/New_York"
+poll_interval_seconds = 30
+
+[[jobs]]
+name = "sync_8k_extended_hours"
+command = "sync-8k"
+schedule_type = "interval"
+interval_minutes = 60
+weekdays = ["mon", "tue", "wed", "thu", "fri"]
+active_start = "06:00"
+active_end = "09:29"
+
+[jobs.request]
+days_back = 7
+universe_source = "movers"
+max_filings = 100
+
+[[jobs]]
+name = "sync_8k_trading_hours"
+command = "sync-8k"
+schedule_type = "interval"
+interval_minutes = 60
+weekdays = ["mon", "tue", "wed", "thu", "fri"]
+active_start = "09:30"
+active_end = "16:00"
+
+[jobs.request]
+days_back = 7
+universe_source = "movers"
+max_filings = 100
+
+[[jobs]]
+name = "sync_8k_after_hours"
+command = "sync-8k"
+schedule_type = "interval"
+interval_minutes = 60
+weekdays = ["mon", "tue", "wed", "thu", "fri"]
+active_start = "16:01"
+active_end = "22:00"
+
+[jobs.request]
+days_back = 7
+universe_source = "movers"
+max_filings = 100
+
+[[jobs]]
+name = "sync_13dg_manager_daytime"
+command = "sync-13dg"
+schedule_type = "interval"
+interval_minutes = 60
+weekdays = ["mon", "tue", "wed", "thu", "fri"]
+active_start = "08:00"
+active_end = "20:00"
+
+[jobs.request]
+mode = "manager"
+days_back = 30
+manager_scope = "watchlist"
+max_filings = 100
+form_scope = "13d"
+
+[[jobs]]
+name = "sync_13dg_manager_passive"
+command = "sync-13dg"
+schedule_type = "interval"
+interval_minutes = 240
+weekdays = ["mon", "tue", "wed", "thu", "fri"]
+active_start = "08:00"
+active_end = "20:00"
+
+[jobs.request]
+mode = "manager"
+days_back = 30
+manager_scope = "watchlist"
+max_filings = 100
+form_scope = "13g"
+
+[[jobs]]
+name = "audit_13dg_coverage_daily"
+command = "audit-13dg-coverage"
+schedule_type = "clock"
+times = ["20:15"]
+weekdays = ["mon", "tue", "wed", "thu", "fri"]
+
+[jobs.request]
+days_back = 180
+manager_scope = "watchlist"
+max_filings = 100
+form_scope = "all"
+
+[[jobs]]
+name = "sync_13f_baseline"
+command = "sync-13f"
+schedule_type = "clock"
+times = ["10:00"]
+weekdays = ["mon", "tue", "wed", "thu", "fri"]
+
+[jobs.request]
+mode = "incremental"
+quarters = 1
+top_limit = 100
+skip_download = false
+
+[[jobs]]
+name = "sync_13f_peak_window"
+command = "sync-13f"
+schedule_type = "interval"
+interval_minutes = 120
+weekdays = ["mon", "tue", "wed", "thu", "fri"]
+active_start = "09:00"
+active_end = "18:00"
+focus_dates = ["02-14", "05-15", "08-14", "11-14"]
+focus_days_before = 2
+focus_days_after = 2
+
+[jobs.request]
+mode = "incremental"
+quarters = 1
+top_limit = 100
+skip_download = false

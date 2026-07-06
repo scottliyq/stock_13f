@@ -3,6 +3,8 @@
 from datetime import datetime, timezone
 import logging
 
+import httpx
+
 from stock_13f.adapters.edgartools_client import EdgarToolsClient
 from stock_13f.adapters.edgartools_client import EdgarTickerLookupError
 from stock_13f.adapters.edgartools_client import EdgarToolsUnavailable
@@ -18,6 +20,24 @@ from stock_13f.repositories.security_universe import SecurityUniverseRepository
 
 
 LOGGER = logging.getLogger("stock_13f.services.sync_8k")
+
+EIGHTK_TICKER_ERRORS: tuple[type[BaseException], ...] = (
+    EdgarTickerLookupError,
+    httpx.HTTPError,
+    OSError,
+    TimeoutError,
+)
+
+EIGHTK_PAYLOAD_FALLBACK_ERRORS: tuple[type[BaseException], ...] = (
+    AttributeError,
+    KeyError,
+    OSError,
+    RuntimeError,
+    TimeoutError,
+    TypeError,
+    ValueError,
+    httpx.HTTPError,
+)
 
 
 class EightKSyncService:
@@ -74,6 +94,7 @@ class EightKSyncService:
             return result
         try:
             records_written = 0
+            skipped_existing = 0
             for ticker in resolved_tickers:
                 try:
                     filings = self._edgar_client.search_company_filings(
@@ -83,16 +104,24 @@ class EightKSyncService:
                         date_from=request.date_from,
                         max_filings=request.max_filings,
                     )
-                except EdgarTickerLookupError as exc:
-                    warnings.append(str(exc))
+                except EIGHTK_TICKER_ERRORS as exc:
+                    warnings.append(f"8-K filing search skipped for {ticker}: {exc}")
                     continue
                 for filing in filings:
                     accession_number = str(
                         getattr(filing, "accession_number", None) or getattr(filing, "accession_no", "unknown-accession")
                     )
+                    existing_payload = self._raw_repository.load_record(accession_number)
+                    if existing_payload is not None:
+                        skipped_existing += 1
+                        LOGGER.info(
+                            "sync_8k_skip_existing_accession",
+                            extra={"ticker": ticker, "accession_number": accession_number},
+                        )
+                        continue
                     try:
                         payload = self._edgar_client.build_8k_payload(filing, ticker)
-                    except (AttributeError, KeyError, OSError, RuntimeError, TypeError, ValueError) as exc:
+                    except EIGHTK_PAYLOAD_FALLBACK_ERRORS as exc:
                         warnings.append(f"8-K parse fallback for {ticker} {accession_number}: {exc}")
                         payload = {
                             "ticker": ticker,
@@ -108,14 +137,21 @@ class EightKSyncService:
                         }
                     self._raw_repository.upsert_record(str(accession_number), payload)
                     records_written += 1
-            LOGGER.info("sync_8k_completed", extra={"rows_written": records_written})
+            LOGGER.info(
+                "sync_8k_completed",
+                extra={"rows_written": records_written, "skipped_existing_accessions": skipped_existing},
+            )
             result = SyncResult.success(
                 job_name="sync-8k",
                 started_at=started_at,
                 rows_written=records_written,
                 checkpoints_updated=1,
                 warnings=warnings,
-                details={"tickers": list(resolved_tickers), "universe_source": request.universe_source},
+                details={
+                    "tickers": list(resolved_tickers),
+                    "universe_source": request.universe_source,
+                    "skipped_existing_accessions": skipped_existing,
+                },
             )
         except (EdgarToolsUnavailable, SupabaseError) as exc:
             result = SyncResult.failed(

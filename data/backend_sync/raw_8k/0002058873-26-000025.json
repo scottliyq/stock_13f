@@ -2,5 +2,141 @@
   "ticker": "Q",
   "form": "8-K",
   "filing_date": "2026-07-01",
-  "company_name": "Qnity Electronics, Inc."
+  "company_name": "Qnity Electronics, Inc.",
+  "accession_number": "0002058873-26-000025",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/2058873/0002058873-26-000025-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/2058873/000205887326000025/0002058873-26-000025.txt",
+  "period_of_report": "2026-07-01",
+  "date_of_report": "July 01, 2026",
+  "item_codes": [
+    "Item 1.01",
+    "Item 2.03"
+  ],
+  "items": [
+    {
+      "code": "Item 1.01",
+      "text": "Item 1.01 Entry into a Material Definitive Agreement. On July 1, 2026 (the “Closing Date”), Qnity Electronics, Inc. (the “Company” or the “Borrower”) and certain of its direct and indirect subsidiaries, party thereto as guarantors and grantors, entered into Repricing Amendment No. 1 to the Credit Agreement (the “Amendment”), dated as of October 31, 2025, among the Borrower, JPMorgan Chase Bank, N.A., as administrative agent and collateral agent, and the lenders and other loan parties from time to time party thereto (as amended from time to time, including by the Amendment, the “Credit Agreement”). Capitalized terms used but not defined herein have the meanings given to them in the Credit Agreement. The Amendment repriced all $2,338,250,000 of the Term Loans (“Term Loans”) outstanding immediately prior to the Closing Date, reducing the applicable interest rate on the Term Loans from (i) Term Secured Overnight Financing Rate (“Term SOFR Rate”) plus a margin of 2.00% (and, in the case of Base Rate Loans, a margin of 1.00%) to (ii) Term SOFR Rate plus a margin of 1.75% (and, in the case of Base Rate Loans, a margin of 0.75%). In connection with the repricing, the repriced Term Loans are subject to a 1.00% premium on certain prepayments, repayments, and amendments constituting a “Repricing Event” occurring on or prior to the date that is six (6) months after the Closing Date. The Amendment did not materially change any of the other terms and conditions of the Credit Agreement. Accordingly, except as set forth herein, the repriced Term Loans have the same material terms (including with respect to maturity, prepayment, security, covenants and events of default) as described under “Senior Secured Credit Facilities” in Note 14 to the Company's consolidated financial statements included in Part II, Item 8 of the Company's Annual Report on Form 10-K for the year ended December 31, 2025. The foregoing description of the Amendment and the Term Loans is not complete and is qualified in its entirety by reference to the full text of the Amendment, a copy of which is filed as Exhibit 10.1 hereto and is incorporated by reference herein. Item 2.03 Creation of a Direct Financial Obligation or an Obligation under an Off-Balance Sheet Arrangement of a Registrant."
+    },
+    {
+      "code": "Item 2.03",
+      "text": "Item 2.03 Creation of a Direct Financial Obligation or an Obligation under an Off-Balance Sheet Arrangement of a Registrant. The information set forth under Item 1.01 hereof is incorporated by reference in this Item 2.03. Item 9.01 Financial Statements and Exhibits. (d) Exhibits Exhibit No. Description 10.1 Amendment No. 1 to Credit Agreement, effective as of July 1, 2026, by and among Qnity Electronics, Inc., JPMorgan Chase Bank, N.A. and the other parties thereto. ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 104 Cover Page Interactive Data File (embedded within the Inline XBRL Document). SIGNATURE Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned hereunto duly authorized. QNITY ELECTRONICS, INC. By: /s/ Peter W. Hennessey Name: Peter W. Hennessey Title: SVP and General Counsel Date: July 1, 2026"
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 0,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "q-20260701.htm",
+      "document_type": "8-K",
+      "description": "8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "exhibit101-termloanreprici.htm",
+      "document_type": "EX-10.1",
+      "description": "EX-10.1",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "q-20260701.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL TAXONOMY EXTENSION SCHEMA DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "q-20260701_def.xml",
+      "document_type": "EX-101.DEF",
+      "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "5",
+      "document": "q-20260701_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "6",
+      "document": "q-20260701_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "7",
+      "document": "image.jpg",
+      "document_type": "GRAPHIC",
+      "description": "",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "8",
+      "document": "image_0.jpg",
+      "document_type": "GRAPHIC",
+      "description": "",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "9",
+      "document": "image_119.jpg",
+      "document_type": "GRAPHIC",
+      "description": "",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "11",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "Cover Document"
+    },
+    {
+      "sequence_number": "12",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "13",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "15",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "17",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "18",
+      "document": "0002058873-26-000025-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "19",
+      "document": "q-20260701_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

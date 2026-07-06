@@ -2,5 +2,101 @@
   "ticker": "MPC",
   "form": "8-K",
   "filing_date": "2026-06-29",
-  "company_name": "Marathon Petroleum Corp"
+  "company_name": "Marathon Petroleum Corp",
+  "accession_number": "0001510295-26-000055",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/1510295/0001510295-26-000055-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/1510295/000151029526000055/0001510295-26-000055.txt",
+  "period_of_report": "2026-06-26",
+  "date_of_report": "June 26, 2026",
+  "item_codes": [
+    "Item 8.01"
+  ],
+  "items": [
+    {
+      "code": "Item 8.01",
+      "text": "Item 8.01 Other Events. On June 26, 2026, Marathon Petroleum Corporation (the \"Company\") was informed of the passing of director Abdulaziz F. Alkhayyal. Mr. Alkhayyal had served as a member of the Company’s board of directors (the “Board”) since 2016. He was a member of the Board’s Compensation and Organization Development Committee and its Sustainability and Public Policy Committee. His commitment and service to the Company will be greatly missed, and the Company offers its sincere condolences to the Alkhayyal family. SIGNATURES Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned hereunto duly authorized. Marathon Petroleum Corporation By: /s/ Molly R. Benson Name: Molly R. Benson Title: Chief Legal Officer and Corporate Secretary"
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 0,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "mpc-20260626.htm",
+      "document_type": "8-K",
+      "description": "8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "mpc-20260626.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL TAXONOMY EXTENSION SCHEMA DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "mpc-20260626_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "mpc-20260626_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "6",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "Document and Entity Information"
+    },
+    {
+      "sequence_number": "7",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "8",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "10",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "12",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "13",
+      "document": "0001510295-26-000055-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "14",
+      "document": "mpc-20260626_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

@@ -163,6 +163,7 @@ class ThirteenDGSyncService:
             return result
         try:
             records_written = 0
+            skipped_existing = 0
             mode = self._normalize_mode(request.mode)
             detail_tickers = [] if mode == "manager" else list(resolved_tickers)
             if mode == "manager":
@@ -180,6 +181,25 @@ class ThirteenDGSyncService:
                         continue
                     for filing in filings:
                         accession_number = self._accession_number_for_filing(filing)
+                        existing_payload = self._raw_repository.load_record(accession_number)
+                        if existing_payload is not None:
+                            skipped_existing += 1
+                            LOGGER.info(
+                                "sync_13dg_reuse_existing_accession",
+                                extra={
+                                    "mode": "manager",
+                                    "source_key": manager_cik,
+                                    "accession_number": accession_number,
+                                },
+                            )
+                            self._write_payload(
+                                accession_number,
+                                existing_payload,
+                                source_mode="manager",
+                                source_key=manager_cik,
+                            )
+                            records_written += 1
+                            continue
                         try:
                             payload = self._edgar_client.build_13dg_payload(filing, "")
                             payload["ticker"] = self._security_identifiers.resolve_ticker(
@@ -207,6 +227,25 @@ class ThirteenDGSyncService:
                         continue
                     for filing in filings:
                         accession_number = self._accession_number_for_filing(filing)
+                        existing_payload = self._raw_repository.load_record(accession_number)
+                        if existing_payload is not None:
+                            skipped_existing += 1
+                            LOGGER.info(
+                                "sync_13dg_reuse_existing_accession",
+                                extra={
+                                    "mode": "issuer",
+                                    "source_key": ticker,
+                                    "accession_number": accession_number,
+                                },
+                            )
+                            self._write_payload(
+                                accession_number,
+                                existing_payload,
+                                source_mode="issuer",
+                                source_key=ticker,
+                            )
+                            records_written += 1
+                            continue
                         try:
                             payload = self._edgar_client.build_13dg_payload(filing, ticker)
                         except THIRTEENDG_PAYLOAD_FALLBACK_ERRORS as exc:
@@ -214,7 +253,10 @@ class ThirteenDGSyncService:
                             payload = self._build_fallback_payload(filing, ticker)
                         self._write_payload(accession_number, payload, source_mode="issuer", source_key=ticker)
                         records_written += 1
-            LOGGER.info("sync_13dg_completed", extra={"rows_written": records_written})
+            LOGGER.info(
+                "sync_13dg_completed",
+                extra={"rows_written": records_written, "skipped_existing_accessions": skipped_existing},
+            )
             result = SyncResult.success(
                 job_name="sync-13dg",
                 started_at=started_at,
@@ -227,6 +269,7 @@ class ThirteenDGSyncService:
                     "manager_ciks": list(resolved_manager_ciks),
                     "universe_source": request.universe_source,
                     "form_scope": request.form_scope,
+                    "skipped_existing_accessions": skipped_existing,
                 },
             )
         except (EdgarToolsUnavailable, SupabaseError) as exc:

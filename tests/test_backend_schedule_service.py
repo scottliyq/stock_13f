@@ -115,13 +115,13 @@ def test_scheduler_triggers_13d_and_13g_on_focus_dates() -> None:
     service.run_due_jobs(datetime(2026, 5, 15, 12, 0, tzinfo=ET))
 
     commands = [command for command, _ in orchestrator.calls]
-    assert commands == ["sync-8k", "sync-13dg", "sync-13dg"]
+    assert commands == ["sync-13dg", "sync-13dg"]
+    assert orchestrator.calls[0][1].mode == "manager"
+    assert orchestrator.calls[0][1].form_scope == "13d"
+    assert orchestrator.calls[0][1].manager_scope == "watchlist"
     assert orchestrator.calls[1][1].mode == "manager"
-    assert orchestrator.calls[1][1].form_scope == "13d"
+    assert orchestrator.calls[1][1].form_scope == "13g"
     assert orchestrator.calls[1][1].manager_scope == "watchlist"
-    assert orchestrator.calls[2][1].mode == "manager"
-    assert orchestrator.calls[2][1].form_scope == "13g"
-    assert orchestrator.calls[2][1].manager_scope == "watchlist"
 
 
 def test_scheduler_supports_audit_13dg_coverage_jobs(tmp_path: Path) -> None:
@@ -163,13 +163,13 @@ def test_scheduler_triggers_13f_peak_job_inside_focus_window() -> None:
     orchestrator = FakeOrchestrator()
     service = BackendScheduleService(config=config, orchestrator=orchestrator, dry_run=True)
 
-    service.run_due_jobs(datetime(2026, 5, 15, 13, 0, tzinfo=ET))
+    service.run_due_jobs(datetime(2026, 5, 15, 15, 0, tzinfo=ET))
 
     commands = [command for command, _ in orchestrator.calls]
-    assert commands == ["sync-8k", "sync-13dg", "sync-13f"]
-    assert orchestrator.calls[1][1].mode == "manager"
-    assert orchestrator.calls[1][1].form_scope == "13d"
-    assert orchestrator.calls[2][1].quarters == 1
+    assert commands == ["sync-13dg", "sync-13f"]
+    assert orchestrator.calls[0][1].mode == "manager"
+    assert orchestrator.calls[0][1].form_scope == "13d"
+    assert orchestrator.calls[1][1].quarters == 1
 
 
 def test_scheduler_triggers_daily_13dg_audit_after_close() -> None:

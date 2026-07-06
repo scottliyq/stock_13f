@@ -2,5 +2,155 @@
   "ticker": "SCHW",
   "form": "8-K",
   "filing_date": "2026-06-29",
-  "company_name": "SCHWAB CHARLES CORP"
+  "company_name": "SCHWAB CHARLES CORP",
+  "accession_number": "0001193125-26-288640",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/316709/0001193125-26-288640-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/316709/000119312526288640/0001193125-26-288640.txt",
+  "period_of_report": "2026-06-25",
+  "date_of_report": "June 25, 2026",
+  "item_codes": [
+    "Item 8.01",
+    "Item 9.01"
+  ],
+  "items": [
+    {
+      "code": "Item 8.01",
+      "text": "Item 8.01 Other Events On June 25, 2026, The Charles Schwab Corporation (“CSC”) issued $1,000,000,000 aggregate principal amount of 4.603% Fixed-to-FloatingRate Senior Notes due 2029 (the “Notes”). The net proceeds of the offering of the Notes were approximately $995.5 million after deducting underwriting discounts and commissions and estimated offering expenses. The Notes were issued under the Senior Indenture, dated as of November 14, 2025, between CSC and The Bank of New York Mellon Trust Company, N.A., as trustee, as supplemented by the Third Supplemental Indenture, dated as of June 29, 2026. The offering was made pursuant to the prospectus supplement dated as of June 25, 2026, and the accompanying prospectus dated December 1, 2023, filed with the Securities and Exchange Commission pursuant to CSC’s effective registration statement on FormS-3(FileNo. 333-275858)(the “Registration Statement”)."
+    },
+    {
+      "code": "Item 9.01",
+      "text": "Item 9.01 Financial Statements and Exhibits (d) Exhibits 1.1 Underwriting Agreement, dated June 25, 2026, by and among CSC, Citigroup Global Markets Inc. and Goldman Sachs & Co. LLC, as the representatives of the several underwriters named therein. 4.1 Senior Indenture, dated as of November 14, 2025, by and between CSC and The Bank of New York Mellon Trust Company, N.A., as Trustee, filed as Exhibit 4.1 to the Registrant’s Form 8-K dated November 14, 2025, and incorporated herein by reference. 4.2 Third Supplemental Indenture, dated as of June 29, 2026, by and between CSC and The Bank of New York Mellon Trust Company, N.A., as Trustee. 5.1 Opinion of Wachtell, Lipton, Rosen & Katz, dated June 29, 2026. 23.1 Consent of Wachtell, Lipton, Rosen & Katz, dated June 29, 2026 (included in Exhibit 5.1). ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 4.3 Form of 4.603% Fixed-to-Floating Rate Senior Notes due 2029 (included in Exhibit 4.2). 104 Cover Page Interactive Data File - the cover page interactive data file does not appear in the Interactive Data File because its XBRL tags are embedded within the Inline XBRL document. Certain portions of Exhibit 1.1 have been omitted pursuant to Rule 601(b)(10) of Regulation S-K.The omitted information is (i) not material and (ii) the type that the registrant treats as private or confidential. Information that has been omitted has been noted in this document with a placeholder identified by the mark “[Intentionally Omitted]”. Signature(s) Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned hereunto duly authorized. THE CHARLES SCHWAB CORPORATION Date: June 29, 2026 By: /s/ Michael Verdeschi Michael Verdeschi Managing Director and Chief Financial Officer"
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 0,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "d334556d8k.htm",
+      "document_type": "8-K",
+      "description": "8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "d334556dex11.htm",
+      "document_type": "EX-1.1",
+      "description": "EX-1.1",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "d334556dex42.htm",
+      "document_type": "EX-4.2",
+      "description": "EX-4.2",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "d334556dex51.htm",
+      "document_type": "EX-5.1",
+      "description": "EX-5.1",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "5",
+      "document": "schw-20260625.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL TAXONOMY EXTENSION SCHEMA",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "6",
+      "document": "schw-20260625_def.xml",
+      "document_type": "EX-101.DEF",
+      "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "7",
+      "document": "schw-20260625_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "8",
+      "document": "schw-20260625_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "9",
+      "document": "g334556g0629074930942.jpg",
+      "document_type": "GRAPHIC",
+      "description": "GRAPHIC",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "10",
+      "document": "g334556g0629074931691.jpg",
+      "document_type": "GRAPHIC",
+      "description": "GRAPHIC",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "11",
+      "document": "g334556g0629081332062.jpg",
+      "document_type": "GRAPHIC",
+      "description": "GRAPHIC",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "13",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "Document and Entity Information"
+    },
+    {
+      "sequence_number": "14",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "15",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "17",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "20",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "21",
+      "document": "0001193125-26-288640-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "22",
+      "document": "d334556d8k_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

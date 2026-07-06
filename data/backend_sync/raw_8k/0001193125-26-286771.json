@@ -2,5 +2,108 @@
   "ticker": "VZ",
   "form": "8-K",
   "filing_date": "2026-06-29",
-  "company_name": "VERIZON COMMUNICATIONS INC"
+  "company_name": "VERIZON COMMUNICATIONS INC",
+  "accession_number": "0001193125-26-286771",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/732712/0001193125-26-286771-index.html",
+  "text_url": "https://www.sec.gov/Archives/edgar/data/732712/000119312526286771/0001193125-26-286771.txt",
+  "period_of_report": "2026-06-28",
+  "date_of_report": "June 28, 2026",
+  "item_codes": [
+    "Item 7.01"
+  ],
+  "items": [
+    {
+      "code": "Item 7.01",
+      "text": "Item 7.01. Regulation FD Disclosure. Joint Venture with BT Group plc On June 28, 2026, Verizon Communications Inc., a Delaware corporation (“Verizon”), entered into a transaction agreement (the “Transaction Agreement”) with BT Group plc, a public limited company incorporated under the laws of England and Wales (“BT”), and Jasper NewCo Limited, a company incorporated under the laws of the Bailiwick of Jersey (“NewCo”). Pursuant to the Transaction Agreement, upon the terms and subject to the conditions thereof, (i) (A) Verizon will contribute the equity interests of certain of its subsidiaries that conduct Verizon’s international wireline connectivity and managed network services business (the “Verizon Contributed Business”) and (B) BT will contribute the equity interests of certain of its subsidiaries that conduct BT’s international wireline connectivity and managed network services business (the “BT Contributed Business”) to NewCo, and (ii) Verizon will make a cash payment equal to $625 million to NewCo, which NewCo will onward distribute to BT, in each case in exchange for shares representing 50% of the issued and outstanding equity interests of NewCo. The value of each of the Verizon Contributed Business and the BT Contributed Business is subject to a cash adjustment for the levels of cash, net working capital and indebtedness of the Verizon Contributed Business and the BT Contributed Business, respectively, as of transaction closing. The Transaction Agreement contemplates the entry into a Joint Venture Agreement between Verizon, BT and NewCo in respect of the governance of NewCo, on the basis of Verizon’s and BT’s equal 50% ownership, as well as certain ancillary commercial agreements and transition services arrangements. The consummation of the transaction is subject to customary regulatory approvals and closing conditions. Second Quarter 2026 Updates In the second quarter of 2026, the net assets representing the Verizon Contributed Business were classified as assets and liabilities held for sale. In connection with this classification, in the second quarter of 2026, Verizon expects to record an estimated loss in the range of $700 million to $800 million. We expect the transaction with BT to be accretive to Verizon Business Group EBITDA in the second quarter of 2026, as the net assets of the Verizon Contributed Business were classified as held for sale and moved from Verizon Business Group to Corporate and other. In addition, as part of its ongoing transformation initiatives, Verizon expects the following items to impact its reported financial results for the second quarter of 2026: As a result of continued headcount reduction initiatives, Verizon expects to record a severance charge in the range of $350 million to $450 million. Verizon expects to record asset rationalization charges in the range of $200 million to $300 million predominately related to the decision to cease use of certain real estate and network assets as part of its transformation initiatives. The information provided pursuant to this Item 7.01 is “furnished” and shall not be deemed to be “filed” with the Securities and Exchange Commission or incorporated by reference in any filing under the Securities Exchange Act of 1934, as amended, or the Securities Act of 1933, as amended, except as shall be expressly set forth by specific reference in any such filings."
+    }
+  ],
+  "has_press_release": false,
+  "has_earnings": false,
+  "press_release_count": 0,
+  "exhibits": [
+    {
+      "sequence_number": "1",
+      "document": "d165697d8k.htm",
+      "document_type": "8-K",
+      "description": "8-K",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "2",
+      "document": "vz-20260628.xsd",
+      "document_type": "EX-101.SCH",
+      "description": "XBRL TAXONOMY EXTENSION SCHEMA",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "3",
+      "document": "vz-20260628_def.xml",
+      "document_type": "EX-101.DEF",
+      "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "4",
+      "document": "vz-20260628_lab.xml",
+      "document_type": "EX-101.LAB",
+      "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "5",
+      "document": "vz-20260628_pre.xml",
+      "document_type": "EX-101.PRE",
+      "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "7",
+      "document": "R1.htm",
+      "document_type": "HTML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": "Document and Entity Information"
+    },
+    {
+      "sequence_number": "8",
+      "document": "report.css",
+      "document_type": "CSS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "9",
+      "document": "Show.js",
+      "document_type": "JS",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "11",
+      "document": "FilingSummary.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "13",
+      "document": "MetaLinks.json",
+      "document_type": "JSON",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "14",
+      "document": "0001193125-26-286771-xbrl.zip",
+      "document_type": "ZIP",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    },
+    {
+      "sequence_number": "15",
+      "document": "d165697d8k_htm.xml",
+      "document_type": "XML",
+      "description": "IDEA: XBRL DOCUMENT",
+      "purpose": ""
+    }
+  ]
 }

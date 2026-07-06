@@ -41,6 +41,7 @@ class FakeEdgarClient:
         self.fail_tickers: set[str] = set()
         self.fail_managers: set[str] = set()
         self.fail_accessions: set[str] = set()
+        self.payload_calls: list[tuple[str, str]] = []
 
     def search_company_filings(
         self,
@@ -99,6 +100,7 @@ class FakeEdgarClient:
         ]
 
     def build_13dg_payload(self, filing: FakeFiling, ticker: str) -> dict[str, object]:
+        self.payload_calls.append((filing.accession_number, ticker))
         if filing.accession_number in self.fail_accessions:
             raise httpx.ReadTimeout(f"timed out while parsing {filing.accession_number}")
         return {
@@ -119,10 +121,14 @@ class FakeEdgarClient:
 
 
 class FakeRawRepository:
-    def __init__(self) -> None:
+    def __init__(self, existing_payloads: dict[str, dict[str, object]] | None = None) -> None:
         self.records: list[tuple[str, dict[str, object]]] = []
         self.reporting_person_rows: list[tuple[str, list[dict[str, object]]]] = []
         self.sync_source_rows: list[dict[str, object]] = []
+        self.existing_payloads = existing_payloads or {}
+
+    def load_record(self, accession_number: str) -> dict[str, object] | None:
+        return self.existing_payloads.get(accession_number)
 
     def upsert_record(self, accession_number: str, payload: dict[str, object]) -> None:
         self.records.append((accession_number, payload))
@@ -254,6 +260,44 @@ def test_sync_13dg_can_limit_queries_to_13g_forms(tmp_path: Path) -> None:
 
     assert result.status == "success"
     assert edgar_client.calls[0]["forms"] == THIRTEENDG_13G_FORM_TYPES
+
+
+def test_sync_13dg_reuses_existing_accession_without_refetching_payload(tmp_path: Path) -> None:
+    edgar_client = FakeEdgarClient()
+    raw_repository = FakeRawRepository(
+        existing_payloads={
+            "0000000000-26-000001": {
+                "ticker": "BFAM",
+                "form": "SCHEDULE 13G",
+                "filing_date": "2026-06-04",
+                "company_name": "Bright Horizons Family Solutions Inc.",
+                "accession_number": "0000000000-26-000001",
+                "reporting_persons": [{"name": "Example Manager"}],
+                "total_shares": 123456,
+                "total_percent": 5.2,
+                "rule_designation": "Rule 13d-1(b)",
+                "issuer_name": "Bright Horizons Family Solutions Inc.",
+                "issuer_cusip": "10920A600",
+                "security_title": "Common Stock",
+                "purpose_text": "",
+            }
+        }
+    )
+    service = ThirteenDGSyncService(
+        settings=build_settings(tmp_path),
+        checkpoints=CheckpointRepository(tmp_path / "checkpoints.json"),
+        raw_repository=raw_repository,
+        edgar_client=edgar_client,
+    )
+
+    result = service.sync(Sync13DGRequest(tickers=("BFAM",), days_back=30, max_filings=5))
+
+    assert result.status == "success"
+    assert result.rows_written == 1
+    assert result.details["skipped_existing_accessions"] == 1
+    assert edgar_client.payload_calls == []
+    assert raw_repository.records[0][0] == "0000000000-26-000001"
+    assert raw_repository.sync_source_rows[0]["source_key"] == "BFAM"
 
 
 def test_sync_13dg_manager_mode_queries_watchlist_ciks(tmp_path: Path) -> None:

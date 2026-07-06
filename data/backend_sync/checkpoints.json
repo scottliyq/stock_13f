@@ -34,9 +34,9 @@
   "sync-8k": {
     "job_name": "sync-8k",
     "status": "success",
-    "started_at": "2026-07-06T11:00:37.503354+00:00",
-    "finished_at": "2026-07-06T11:06:40.184863+00:00",
-    "rows_written": 28,
+    "started_at": "2026-07-06T12:00:38.449422+00:00",
+    "finished_at": "2026-07-06T12:05:48.814919+00:00",
+    "rows_written": 2,
     "checkpoints_updated": 1,
     "warnings": [
       "8-K filing search skipped for BLCR: Ticker could not be resolved by edgartools: BLCR"
@@ -223,7 +223,8 @@
         "WMT",
         "XOM"
       ],
-      "universe_source": "movers"
+      "universe_source": "movers",
+      "skipped_existing_accessions": 28
     },
     "cursor": {
       "tickers": [
@@ -429,9 +430,9 @@
   "sync-13dg": {
     "job_name": "sync-13dg",
     "status": "success",
-    "started_at": "2026-07-05T05:38:55.344164+00:00",
-    "finished_at": "2026-07-05T05:38:59.491715+00:00",
-    "rows_written": 4,
+    "started_at": "2026-07-06T12:06:01.943255+00:00",
+    "finished_at": "2026-07-06T12:06:08.427838+00:00",
+    "rows_written": 1,
     "checkpoints_updated": 1,
     "warnings": [],
     "error_summary": "",
@@ -439,15 +440,36 @@
       "mode": "manager",
       "tickers": [],
       "manager_ciks": [
-        "2045724"
+        "1336528",
+        "1006438",
+        "2045724",
+        "2053242",
+        "1697748",
+        "1569049",
+        "1135730",
+        "1835751",
+        "1759760",
+        "934639",
+        "1908066"
       ],
       "universe_source": "dim",
-      "form_scope": "all"
+      "form_scope": "13g",
+      "skipped_existing_accessions": 1
     },
     "cursor": {
       "mode": "manager",
       "manager_ciks": [
-        "2045724"
+        "1336528",
+        "1006438",
+        "2045724",
+        "2053242",
+        "1697748",
+        "1569049",
+        "1135730",
+        "1835751",
+        "1759760",
+        "934639",
+        "1908066"
       ]
     }
   },

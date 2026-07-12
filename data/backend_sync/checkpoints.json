@@ -430,9 +430,9 @@
   "sync-13dg": {
     "job_name": "sync-13dg",
     "status": "success",
-    "started_at": "2026-07-06T12:06:01.943255+00:00",
-    "finished_at": "2026-07-06T12:06:08.427838+00:00",
-    "rows_written": 1,
+    "started_at": "2026-07-08T07:42:45.712918+00:00",
+    "finished_at": "2026-07-08T07:42:48.175041+00:00",
+    "rows_written": 0,
     "checkpoints_updated": 1,
     "warnings": [],
     "error_summary": "",
@@ -440,36 +440,16 @@
       "mode": "manager",
       "tickers": [],
       "manager_ciks": [
-        "1336528",
-        "1006438",
-        "2045724",
-        "2053242",
-        "1697748",
-        "1569049",
-        "1135730",
-        "1835751",
-        "1759760",
-        "934639",
-        "1908066"
+        "1135730"
       ],
       "universe_source": "dim",
-      "form_scope": "13g",
-      "skipped_existing_accessions": 1
+      "form_scope": "all",
+      "skipped_existing_accessions": 0
     },
     "cursor": {
       "mode": "manager",
       "manager_ciks": [
-        "1336528",
-        "1006438",
-        "2045724",
-        "2053242",
-        "1697748",
-        "1569049",
-        "1135730",
-        "1835751",
-        "1759760",
-        "934639",
-        "1908066"
+        "1135730"
       ]
     }
   },

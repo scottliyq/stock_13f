@@ -162,6 +162,29 @@ def _build_combined_monitor_rows(
     return monitor_rows, overlap_rows
 
 
+def _build_manager_13dg_monitor_df(rows: list[dict[str, object]]) -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "Manager": row.get("manager_name", "-"),
+                "Date": row.get("filing_date", "-"),
+                "Ticker": row.get("ticker", "-"),
+                "Form": row.get("form", "-"),
+                "Company": row.get("company_name", "-"),
+                "13D/G change": _format_13dg_change_status(row.get("filing_change_status", "")),
+                "13D/G delta shares": format_int(row.get("filing_change_delta_shares", 0)),
+                "13D/G delta %": format_percent(row.get("filing_change_delta_percent")),
+                "Reported shares": format_int(row.get("reported_shares", 0)),
+                "Ownership %": format_percent(row.get("reported_percent")),
+                "13F action": _format_rebalance_status(row.get("rebalance_status", "")),
+                "13F delta value": format_usd(row.get("rebalance_value_change_usd")),
+                "13F current value": format_usd(row.get("rebalance_current_value_usd")),
+            }
+            for row in rows
+        ]
+    )
+
+
 report_period = st.session_state.get("global_report_period", "")
 
 profiles = load_manager_profiles()
@@ -368,46 +391,24 @@ with right_col:
                     else:
                         st.caption("No rebalance tickers matched the selected manager and current lens.")
                 else:
-                    st.markdown("**Multi-manager summary**")
+                    manager_13dg_monitor_rows, _ = _build_combined_monitor_rows(
+                        manager_cards,
+                        selected_report_period,
+                    )
+                    st.markdown("**All selected manager 13D/G timeline**")
                     st.write(
-                        f"Selected managers cover {len(unique_changed_tickers)} unique changed tickers in {selected_report_period or '-'}."
-                        f" Aggregate new/increased signals: {total_new_or_add}. Aggregate reduced/exited signals: {total_trim}."
+                        f"Showing recent 13D/G filings for all selected managers with the same fields as the single-manager view, ordered by filing date for report period {selected_report_period or '-'}."
                     )
-                    summary_df = pd.DataFrame(
-                        [
-                            {
-                                "Manager": card["profile"].get("manager_name", "-"),
-                                "CIK": card["profile"].get("manager_cik", "-"),
-                                "Changed tickers": len(card["changed_tickers"]),
-                                "New / increased": int(card["new_or_add_count"]),
-                                "Reduced / exited": int(card["trim_count"]),
-                                "Recent 13D/G": len(card["manager_13dg_rows"]),
-                                "Top adds": _summarize_tickers(
-                                    [
-                                        row
-                                        for row in card["changed_rows"]
-                                        if str(row.get("status", "")).strip().lower() in {"new", "increased"}
-                                    ],
-                                    limit=4,
-                                ),
-                                "Top trims": _summarize_tickers(
-                                    [
-                                        row
-                                        for row in card["changed_rows"]
-                                        if str(row.get("status", "")).strip().lower() in {"decreased", "exited"}
-                                    ],
-                                    limit=4,
-                                ),
-                            }
-                            for card in manager_cards
-                        ]
-                    )
-                    st.dataframe(
-                        summary_df,
-                        use_container_width=True,
-                        hide_index=True,
-                        height=_table_height(len(summary_df), min_height=220, max_height=420),
-                    )
+                    if manager_13dg_monitor_rows:
+                        manager_13dg_monitor_df = _build_manager_13dg_monitor_df(manager_13dg_monitor_rows)
+                        st.dataframe(
+                            manager_13dg_monitor_df,
+                            use_container_width=True,
+                            hide_index=True,
+                            height=_table_height(len(manager_13dg_monitor_df), min_height=260, max_height=520),
+                        )
+                    else:
+                        st.caption("No recent manager 13D/G rows were found for the selected manager set.")
 
             elif detail_view == "13F tickers":
                 if combined_changed_rows:
@@ -451,26 +452,7 @@ with right_col:
                 if manager_13dg_monitor_rows:
                     st.markdown("**Recent manager 13D/G filings**")
                     st.caption("13D/G rows show current disclosed shares and ownership %. 13F columns are cross-checked against the latest report-period holding for the same manager and ticker. `Not reported` means the ticker was not found in the latest 13F quarter.")
-                    manager_13dg_monitor_df = pd.DataFrame(
-                        [
-                            {
-                                "Manager": row.get("manager_name", "-"),
-                                "Date": row.get("filing_date", "-"),
-                                "Ticker": row.get("ticker", "-"),
-                                "Form": row.get("form", "-"),
-                                "Company": row.get("company_name", "-"),
-                                "13D/G change": _format_13dg_change_status(row.get("filing_change_status", "")),
-                                "13D/G delta shares": format_int(row.get("filing_change_delta_shares", 0)),
-                                "13D/G delta %": format_percent(row.get("filing_change_delta_percent")),
-                                "Reported shares": format_int(row.get("reported_shares", 0)),
-                                "Ownership %": format_percent(row.get("reported_percent")),
-                                "13F action": _format_rebalance_status(row.get("rebalance_status", "")),
-                                "13F delta value": format_usd(row.get("rebalance_value_change_usd")),
-                                "13F current value": format_usd(row.get("rebalance_current_value_usd")),
-                            }
-                            for row in manager_13dg_monitor_rows
-                        ]
-                    )
+                    manager_13dg_monitor_df = _build_manager_13dg_monitor_df(manager_13dg_monitor_rows)
                     st.dataframe(
                         manager_13dg_monitor_df,
                         use_container_width=True,
@@ -479,26 +461,7 @@ with right_col:
                     )
                     if related_13dg_monitor_rows:
                         st.markdown("**Overlap with current 13F rebalance tickers**")
-                        related_13dg_monitor_df = pd.DataFrame(
-                            [
-                                {
-                                    "Manager": row.get("manager_name", "-"),
-                                    "Date": row.get("filing_date", "-"),
-                                    "Ticker": row.get("ticker", "-"),
-                                    "Form": row.get("form", "-"),
-                                    "Company": row.get("company_name", "-"),
-                                    "13D/G change": _format_13dg_change_status(row.get("filing_change_status", "")),
-                                    "13D/G delta shares": format_int(row.get("filing_change_delta_shares", 0)),
-                                    "13D/G delta %": format_percent(row.get("filing_change_delta_percent")),
-                                    "Reported shares": format_int(row.get("reported_shares", 0)),
-                                    "Ownership %": format_percent(row.get("reported_percent")),
-                                    "13F action": _format_rebalance_status(row.get("rebalance_status", "")),
-                                    "13F delta value": format_usd(row.get("rebalance_value_change_usd")),
-                                    "13F current value": format_usd(row.get("rebalance_current_value_usd")),
-                                }
-                                for row in related_13dg_monitor_rows
-                            ]
-                        )
+                        related_13dg_monitor_df = _build_manager_13dg_monitor_df(related_13dg_monitor_rows)
                         st.dataframe(
                             related_13dg_monitor_df,
                             use_container_width=True,

@@ -8,6 +8,7 @@
 
 ## 2026-07-05
 
+- `Managers` 页多选交互改为“时间序列明细优先”：当全选或多选机构时，右侧 `Summary` 不再展示集合化的 multi-manager summary 表，改为复用单选 `13D/G monitor` 的字段口径，按 filing date 展示全部选中基金的 `13D/G` 调仓流水。
 - 8-K / 13D-G 同步补上“基于 accession 的增量跳过”逻辑：若本地已存在对应 accession，则不再重复抓取 SEC filing 正文；其中 13D/G 会复用本地 payload，并继续补写 `raw_13dg_sync_sources` 映射，避免 manager / issuer 多入口下重复下载正文。
 - 为增量跳过补测试：验证已同步 accession 不会再次调用 `build_8k_payload()` / `build_13dg_payload()`；同时删除误建的 `reports/2026-07-06-sec-download-duplication-check.md`，后续修改记录继续只维护在根目录 `backlog.md`。
 - 更新 `~/.codex/superpowers/skills/using-superpowers/SKILL.md` 与 `references/codex-tools.md`，修正 Codex 场景下的 skill 加载说明、原生工具映射，以及多代理工具的真实约束。

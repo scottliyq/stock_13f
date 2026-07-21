@@ -28,9 +28,30 @@ class FakeSupabaseClient:
         self.on_conflict = on_conflict
         return len(rows)
 
+    def fetch_rows(
+        self,
+        table_name: str,
+        limit: int = 10,
+        offset: int = 0,
+        filters: dict[str, str] | None = None,
+        order: str | None = None,
+    ) -> list[dict[str, object]]:
+        del table_name, limit, offset, order
+        if filters is None:
+            return list(self.rows)
+        job_name_filter = filters.get("job_name", "")
+        if job_name_filter.startswith("eq."):
+            job_name = job_name_filter.removeprefix("eq.")
+            return [row for row in self.rows if row.get("job_name") == job_name]
+        return list(self.rows)
+
 
 def test_checkpoint_repository_records_latest_status(tmp_path: Path) -> None:
-    repository = CheckpointRepository(tmp_path / "checkpoints.json")
+    supabase_client = FakeSupabaseClient()
+    repository = CheckpointRepository(
+        tmp_path / "checkpoints.json",
+        supabase_client=supabase_client,
+    )
     result = SyncResult.success(
         job_name="sync-13f",
         started_at=datetime.now(timezone.utc),
@@ -47,12 +68,11 @@ def test_checkpoint_repository_records_latest_status(tmp_path: Path) -> None:
     assert status["cursor"]["latest_report_date"] == "2026-03-31"
 
 
-def test_checkpoint_repository_handles_empty_file(tmp_path: Path) -> None:
-    path = tmp_path / "checkpoints.json"
-    path.write_text("", encoding="utf-8")
-    repository = CheckpointRepository(path)
+def test_checkpoint_repository_returns_empty_without_supabase_client(tmp_path: Path) -> None:
+    repository = CheckpointRepository(tmp_path / "checkpoints.json")
 
     assert repository.list_statuses() == []
+    assert repository.latest_status("sync-13f") is None
 
 
 def test_checkpoint_repository_dual_writes_remote_status(tmp_path: Path) -> None:

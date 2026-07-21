@@ -161,9 +161,6 @@ class BackendOrchestrator:
 
     def show_status(self) -> list[dict[str, object]]:
         try:
-            remote_statuses = self._checkpoints.list_remote_statuses()
+            return self._checkpoints.list_remote_statuses()
         except SupabaseError:
-            remote_statuses = []
-        if remote_statuses:
-            return remote_statuses
-        return self._checkpoints.list_statuses()
+            return []

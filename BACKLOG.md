@@ -8,6 +8,7 @@
 
 ## 2026-07-05
 
+- checkpoint 本地文件链路正式下线：`CheckpointRepository` 改为只写 / 只读 Supabase `public.sync_checkpoints`，`show-status` 不再回退本地 `checkpoints.json`，远端不可用时直接返回空列表；同时删除仓库内 `data/backend_sync/checkpoints.json`，避免后台继续产生本地状态副本。
 - `show-status` 收口到与 UI 相同的 Supabase 状态源：`BackendOrchestrator.show_status()` 现优先读取 `public.sync_checkpoints`，只有远端不可用或无结果时才回退本地 `checkpoints.json`；并补充对应回归测试覆盖“远端优先 / 本地兜底”两条路径。
 - 后台 / UI 分离部署场景补齐 `sync_checkpoints` Supabase 主链：新增 `sql/0004_sync_checkpoints.sql`，`CheckpointRepository` 支持双写本地文件与远端 `public.sync_checkpoints`，UI sidebar 改为只从 Supabase 读取任务状态，不再依赖本地 `checkpoints.json`。
 - Supabase 客户端补上“只读 UI 可用 publishable key”能力：`build_supabase_client(..., allow_publishable_fallback=True)` 允许 UI 服务器仅配置 `SUPABASE_URL + SUPABASE_PUBLISHABLE_KEY` 读取 mart 与状态表，后台仍优先使用 `SUPABASE_SECRET_KEY` 写入。

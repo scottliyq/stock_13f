@@ -8,6 +8,10 @@
 
 ## 2026-07-05
 
+- `show-status` 收口到与 UI 相同的 Supabase 状态源：`BackendOrchestrator.show_status()` 现优先读取 `public.sync_checkpoints`，只有远端不可用或无结果时才回退本地 `checkpoints.json`；并补充对应回归测试覆盖“远端优先 / 本地兜底”两条路径。
+- 后台 / UI 分离部署场景补齐 `sync_checkpoints` Supabase 主链：新增 `sql/0004_sync_checkpoints.sql`，`CheckpointRepository` 支持双写本地文件与远端 `public.sync_checkpoints`，UI sidebar 改为只从 Supabase 读取任务状态，不再依赖本地 `checkpoints.json`。
+- Supabase 客户端补上“只读 UI 可用 publishable key”能力：`build_supabase_client(..., allow_publishable_fallback=True)` 允许 UI 服务器仅配置 `SUPABASE_URL + SUPABASE_PUBLISHABLE_KEY` 读取 mart 与状态表，后台仍优先使用 `SUPABASE_SECRET_KEY` 写入。
+- 修复 sidebar `Latest jobs` 刷新滞后：`load_checkpoint_statuses()` 改为绑定 `data/backend_sync/checkpoints.json` 的 `mtime` 自动失效缓存，并在 `streamlit_app.py` 侧边栏加入 `Refresh status` 按钮，确保手工跑完 `sync-13dg` 等后台任务后，UI 可立即显示最新完成时间。
 - `Managers` 页多选交互改为“时间序列明细优先”：当全选或多选机构时，右侧 `Summary` 不再展示集合化的 multi-manager summary 表，改为复用单选 `13D/G monitor` 的字段口径，按 filing date 展示全部选中基金的 `13D/G` 调仓流水。
 - 8-K / 13D-G 同步补上“基于 accession 的增量跳过”逻辑：若本地已存在对应 accession，则不再重复抓取 SEC filing 正文；其中 13D/G 会复用本地 payload，并继续补写 `raw_13dg_sync_sources` 映射，避免 manager / issuer 多入口下重复下载正文。
 - 为增量跳过补测试：验证已同步 accession 不会再次调用 `build_8k_payload()` / `build_13dg_payload()`；同时删除误建的 `reports/2026-07-06-sec-download-duplication-check.md`，后续修改记录继续只维护在根目录 `backlog.md`。

@@ -69,15 +69,18 @@ def inject_app_styles() -> None:
 def render_sidebar() -> None:
     settings = get_settings()
     client = get_supabase_client()
-    statuses = load_checkpoint_statuses()
     with st.sidebar:
         st.markdown("**Research workspace**")
         st.caption("13F / 8-K / 13D-G institution monitor")
         st.caption(f"Repo: `{settings.paths.repo_root.name}`")
         st.caption(f"Supabase: {'connected' if client is not None else 'missing config'}")
+        if st.button("Refresh status", use_container_width=True):
+            load_checkpoint_statuses.clear()
+            st.rerun()
+        statuses = load_checkpoint_statuses()
         if statuses:
             st.caption("Latest jobs")
-            for status in sorted(statuses, key=lambda item: str(item.get("finished_at", "")), reverse=True)[:4]:
+            for status in statuses[:4]:
                 st.caption(
                     f"{status.get('job_name', '-')}: {status.get('status', '-')}"
                     f" · {status.get('finished_at', '-')}"

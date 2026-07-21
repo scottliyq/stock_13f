@@ -10,7 +10,6 @@ from stock_13f.core.settings import Settings
 from stock_13f.core.supabase import build_supabase_client
 from stock_13f.core.supabase import SupabaseError
 from stock_13f.domain.manager_registry import list_default_managers
-from stock_13f.repositories.checkpoints import CheckpointRepository
 from stock_13f.repositories.security_identifiers import SecurityIdentifierRepository
 
 
@@ -29,7 +28,7 @@ def get_settings() -> Settings:
 
 @st.cache_resource(show_spinner=False)
 def get_supabase_client():
-    return build_supabase_client(get_settings())
+    return build_supabase_client(get_settings(), allow_publishable_fallback=True)
 
 
 @st.cache_resource(show_spinner=False)
@@ -46,8 +45,18 @@ def get_security_identifier_repository() -> SecurityIdentifierRepository:
 
 @st.cache_data(ttl=60, show_spinner=False)
 def load_checkpoint_statuses() -> list[dict[str, object]]:
-    repository = CheckpointRepository(get_settings().paths.checkpoints_path)
-    return repository.list_statuses()
+    client = get_supabase_client()
+    if client is None:
+        return []
+    try:
+        return client.fetch_rows(
+            "sync_checkpoints",
+            limit=20,
+            offset=0,
+            order="finished_at.desc",
+        )
+    except SupabaseError:
+        return []
 
 
 def _fetch_all_rows(

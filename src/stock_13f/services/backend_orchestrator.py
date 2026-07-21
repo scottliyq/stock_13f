@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 
 from stock_13f.adapters.structured_13f_dataset import Structured13FDatasetAdapter
 from stock_13f.core.settings import Settings
+from stock_13f.core.supabase import build_supabase_client
+from stock_13f.core.supabase import SupabaseError
 from stock_13f.domain.sync_requests import Audit13DGCoverageRequest
 from stock_13f.domain.sync_requests import BackfillTickersRequest
 from stock_13f.domain.sync_requests import RebuildMartsRequest
@@ -34,7 +36,10 @@ class BackendOrchestrator:
         marts_service: MartsService | None = None,
         ticker_backfill_service: TickerBackfillService | None = None,
     ) -> None:
-        checkpoints = checkpoints or CheckpointRepository(settings.paths.checkpoints_path)
+        checkpoints = checkpoints or CheckpointRepository(
+            settings.paths.checkpoints_path,
+            supabase_client=build_supabase_client(settings),
+        )
         self._settings = settings
         self._checkpoints = checkpoints
         self._thirteenf_service = thirteenf_service or ThirteenFSyncService(settings, checkpoints)
@@ -155,4 +160,10 @@ class BackendOrchestrator:
         return aggregate
 
     def show_status(self) -> list[dict[str, object]]:
+        try:
+            remote_statuses = self._checkpoints.list_remote_statuses()
+        except SupabaseError:
+            remote_statuses = []
+        if remote_statuses:
+            return remote_statuses
         return self._checkpoints.list_statuses()

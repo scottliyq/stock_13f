@@ -22,14 +22,15 @@ class SupabaseTableMissingError(SupabaseError):
 @dataclass(frozen=True)
 class SupabaseRuntimeConfig:
     url: str
-    secret_key: str
+    api_key: str
     publishable_key: str
 
 
 def build_supabase_config(settings: Settings) -> SupabaseRuntimeConfig:
+    api_key = settings.supabase_secret_key or settings.supabase_publishable_key
     return SupabaseRuntimeConfig(
         url=settings.supabase_url,
-        secret_key=settings.supabase_secret_key,
+        api_key=api_key,
         publishable_key=settings.supabase_publishable_key,
     )
 
@@ -58,8 +59,8 @@ class SupabaseRestClient:
         self._session = requests.Session()
         self._session.headers.update(
             {
-                "apikey": config.secret_key,
-                "Authorization": f"Bearer {config.secret_key}",
+                "apikey": config.api_key,
+                "Authorization": f"Bearer {config.api_key}",
                 "Content-Type": "application/json",
             }
         )
@@ -187,7 +188,15 @@ class SupabaseRestClient:
         )
 
 
-def build_supabase_client(settings: Settings) -> SupabaseRestClient | None:
-    if not settings.supabase_url or not settings.supabase_secret_key:
+def build_supabase_client(
+    settings: Settings,
+    *,
+    allow_publishable_fallback: bool = False,
+) -> SupabaseRestClient | None:
+    if not settings.supabase_url:
         return None
-    return SupabaseRestClient(build_supabase_config(settings))
+    if settings.supabase_secret_key:
+        return SupabaseRestClient(build_supabase_config(settings))
+    if allow_publishable_fallback and settings.supabase_publishable_key:
+        return SupabaseRestClient(build_supabase_config(settings))
+    return None

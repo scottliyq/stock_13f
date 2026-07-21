@@ -1,8 +1,29 @@
-"""Helpers for single-row selection state across Streamlit pages."""
+"""Helpers for selection state across Streamlit pages."""
 
+from collections.abc import Iterable
 from typing import Any
 
 import streamlit as st
+
+
+def resolve_multi_selection(
+    available_keys: Iterable[object],
+    selected_keys: Iterable[object],
+    *,
+    allow_empty: bool = False,
+) -> list[str]:
+    """Keep valid selections and select every available key by default."""
+
+    available = [str(value).strip() for value in available_keys if str(value).strip()]
+    available_set = set(available)
+    selected = [
+        str(value).strip()
+        for value in selected_keys
+        if str(value).strip() and str(value).strip() in available_set
+    ]
+    if selected or allow_empty:
+        return selected
+    return available
 
 
 def resolve_selected_index(

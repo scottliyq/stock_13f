@@ -10,6 +10,7 @@ from stock_13f.ui.data_access import prewarm_manager_ui_cache
 from stock_13f.ui.formatters import format_int
 from stock_13f.ui.formatters import format_percent
 from stock_13f.ui.formatters import format_usd
+from stock_13f.ui.selection import resolve_multi_selection
 
 
 MANAGER_13DG_PAGE_LIMIT = 100
@@ -238,16 +239,12 @@ with st.container(horizontal=True):
 
 left_col, right_col = st.columns([1.08, 1.17], vertical_alignment="top")
 
-filtered_ciks = {_manager_key(row) for row in filtered_profiles}
-selected_ciks_state = st.session_state.get("managers_selected_ciks", [])
-selected_ciks = [
-    str(value).strip()
-    for value in selected_ciks_state
-    if str(value).strip() and str(value).strip() in filtered_ciks
-]
 allow_empty_selection = bool(st.session_state.get("managers_allow_empty_selection", False))
-if not selected_ciks and filtered_profiles and not allow_empty_selection:
-    selected_ciks = [_manager_key(filtered_profiles[0])]
+selected_ciks = resolve_multi_selection(
+    (_manager_key(row) for row in filtered_profiles),
+    st.session_state.get("managers_selected_ciks", []),
+    allow_empty=allow_empty_selection,
+)
 st.session_state["managers_selected_ciks"] = selected_ciks
 
 with left_col:

@@ -6,6 +6,10 @@
 - 不再在 `reports/` 顶层新增按日期命名的修改记录文件。
 - `reports/13_following/` 等业务报告、分析产物和数据文件继续保留，不纳入本次清理。
 
+## 2026-07-21
+
+- `Managers` 页面初次打开时默认全选当前筛选范围内的 managers，使右侧聚合视图直接展示全部已追踪机构的 13D/G monitor 数据；用户手动选择子集或点击 `Clear` 后仍保留其显式选择状态。
+
 ## 2026-07-05
 
 - checkpoint 本地文件链路正式下线：`CheckpointRepository` 改为只写 / 只读 Supabase `public.sync_checkpoints`，`show-status` 不再回退本地 `checkpoints.json`，远端不可用时直接返回空列表；同时删除仓库内 `data/backend_sync/checkpoints.json`，避免后台继续产生本地状态副本。

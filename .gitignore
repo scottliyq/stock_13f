@@ -9,3 +9,4 @@ data/backend_sync/edgar_cache/_tcache/
 data/backend_sync/
 data/backend_sync/marts/
 data/backend_sync/raw_8k/
+data/backend_sync/checkpoints.json

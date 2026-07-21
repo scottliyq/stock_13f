@@ -34,9 +34,9 @@
   "sync-8k": {
     "job_name": "sync-8k",
     "status": "success",
-    "started_at": "2026-07-06T12:00:38.449422+00:00",
-    "finished_at": "2026-07-06T12:05:48.814919+00:00",
-    "rows_written": 2,
+    "started_at": "2026-07-21T00:39:10.722838+00:00",
+    "finished_at": "2026-07-21T00:44:22.568166+00:00",
+    "rows_written": 36,
     "checkpoints_updated": 1,
     "warnings": [
       "8-K filing search skipped for BLCR: Ticker could not be resolved by edgartools: BLCR"
@@ -224,7 +224,7 @@
         "XOM"
       ],
       "universe_source": "movers",
-      "skipped_existing_accessions": 28
+      "skipped_existing_accessions": 0
     },
     "cursor": {
       "tickers": [

@@ -8,6 +8,7 @@
 
 ## 2026-07-21
 
+- 修复 Streamlit Cloud 热重载期间 `Managers` 页调用端与 `stock_13f.ui.selection` 模块版本不一致导致的 `ImportError`：页面改为兼容模块级导入，并在旧进程尚未加载新 helper 时使用等价 fallback，保证页面可恢复且仍默认全选 managers。
 - `Managers` 页面初次打开时默认全选当前筛选范围内的 managers，使右侧聚合视图直接展示全部已追踪机构的 13D/G monitor 数据；用户手动选择子集或点击 `Clear` 后仍保留其显式选择状态。
 
 ## 2026-07-05

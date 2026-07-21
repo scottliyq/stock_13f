@@ -23,3 +23,10 @@ def test_multi_selection_allows_explicit_empty_selection() -> None:
 
 def test_multi_selection_drops_keys_outside_current_filter() -> None:
     assert resolve_multi_selection(["101", "202"], ["202", "303"]) == ["202"]
+
+
+def test_managers_page_avoids_hot_reload_sensitive_function_import() -> None:
+    source = (REPO_ROOT / "app_pages" / "managers.py").read_text(encoding="utf-8")
+
+    assert "from stock_13f.ui import selection as selection_state" in source
+    assert "from stock_13f.ui.selection import resolve_multi_selection" not in source

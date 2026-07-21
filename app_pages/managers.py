@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 
+from stock_13f.ui import selection as selection_state
 from stock_13f.ui.data_access import build_manager_13dg_monitor_rows
 from stock_13f.ui.data_access import load_manager_profiles
 from stock_13f.ui.data_access import load_manager_rebalance_snapshot
@@ -10,7 +11,6 @@ from stock_13f.ui.data_access import prewarm_manager_ui_cache
 from stock_13f.ui.formatters import format_int
 from stock_13f.ui.formatters import format_percent
 from stock_13f.ui.formatters import format_usd
-from stock_13f.ui.selection import resolve_multi_selection
 
 
 MANAGER_13DG_PAGE_LIMIT = 100
@@ -57,6 +57,21 @@ def _summarize_tickers(rows: list[dict[str, object]], limit: int = 5) -> str:
 
 def _manager_key(profile: dict[str, object]) -> str:
     return str(profile.get("manager_cik", "") or "").strip()
+
+
+def _resolve_manager_selection(
+    available_keys: list[str],
+    selected_keys: list[object],
+    *,
+    allow_empty: bool,
+) -> list[str]:
+    resolver = getattr(selection_state, "resolve_multi_selection", None)
+    if callable(resolver):
+        return resolver(available_keys, selected_keys, allow_empty=allow_empty)
+
+    available_set = set(available_keys)
+    selected = [str(value).strip() for value in selected_keys if str(value).strip() in available_set]
+    return selected if selected or allow_empty else available_keys
 
 
 def _table_height(row_count: int, min_height: int = 180, max_height: int = 520) -> int:
@@ -240,8 +255,8 @@ with st.container(horizontal=True):
 left_col, right_col = st.columns([1.08, 1.17], vertical_alignment="top")
 
 allow_empty_selection = bool(st.session_state.get("managers_allow_empty_selection", False))
-selected_ciks = resolve_multi_selection(
-    (_manager_key(row) for row in filtered_profiles),
+selected_ciks = _resolve_manager_selection(
+    [_manager_key(row) for row in filtered_profiles],
     st.session_state.get("managers_selected_ciks", []),
     allow_empty=allow_empty_selection,
 )

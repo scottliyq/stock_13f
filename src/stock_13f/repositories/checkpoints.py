@@ -1,11 +1,15 @@
 """Supabase-backed checkpoint repository for backend sync jobs."""
 
 from pathlib import Path
+import logging
 
 from stock_13f.core.supabase import SupabaseError
 from stock_13f.core.supabase import SupabaseRestClient
 from stock_13f.core.supabase import SupabaseTableMissingError
 from stock_13f.domain.sync_results import SyncResult
+
+
+LOGGER = logging.getLogger("stock_13f.repositories.checkpoints")
 
 
 class CheckpointRepository:
@@ -34,11 +38,17 @@ class CheckpointRepository:
     def _record_remote_result(self, payload_row: dict[str, object]) -> None:
         if self._supabase_client is None:
             return
-        self._supabase_client.upsert_rows(
-            self._REMOTE_TABLE_NAME,
-            [payload_row],
-            on_conflict="job_name",
-        )
+        try:
+            self._supabase_client.upsert_rows(
+                self._REMOTE_TABLE_NAME,
+                [payload_row],
+                on_conflict="job_name",
+            )
+        except SupabaseError:
+            LOGGER.exception(
+                "checkpoint_remote_write_failed",
+                extra={"job_name": str(payload_row.get("job_name", ""))},
+            )
 
     def record_result(self, result: SyncResult, cursor: dict[str, object] | None = None) -> None:
         payload_row = self._build_status_payload(result, cursor)

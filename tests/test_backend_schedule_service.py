@@ -57,6 +57,12 @@ class FakeOrchestrator:
         return FakeResult()
 
 
+class FailingSyncAllOrchestrator(FakeOrchestrator):
+    def sync_all(self, request):
+        del request
+        raise RuntimeError("scheduler transient failure")
+
+
 def test_scheduler_config_loads_et_jobs_and_focus_windows(tmp_path: Path) -> None:
     config_path = tmp_path / "backend_schedule.toml"
     config_path.write_text(
@@ -183,3 +189,33 @@ def test_scheduler_triggers_daily_13dg_audit_after_close() -> None:
     assert commands == ["audit-13dg-coverage"]
     assert orchestrator.calls[0][1].manager_scope == "watchlist"
     assert orchestrator.calls[0][1].days_back == 180
+
+
+def test_scheduler_keeps_running_when_sync_all_has_recoverable_error(tmp_path: Path) -> None:
+    config_path = tmp_path / "backend_schedule.toml"
+    config_path.write_text(
+        """
+[scheduler]
+timezone = "America/New_York"
+poll_interval_seconds = 15
+
+[[jobs]]
+name = "sync_all"
+command = "sync-all"
+schedule_type = "clock"
+times = ["09:30"]
+weekdays = ["mon"]
+
+[jobs.request]
+with_marts = true
+""",
+        encoding="utf-8",
+    )
+    config = BackendSchedulerConfig.load(config_path)
+    service = BackendScheduleService(
+        config=config,
+        orchestrator=FailingSyncAllOrchestrator(),
+        dry_run=True,
+    )
+
+    service.run_due_jobs(datetime(2026, 7, 6, 9, 30, tzinfo=ET))

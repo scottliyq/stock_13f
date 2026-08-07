@@ -35,6 +35,19 @@ class FakeService:
         return self.sync(request)
 
 
+@dataclass
+class RaisingService:
+    job_name: str
+    error_message: str = "temporary backend failure"
+
+    def sync(self, request) -> SyncResult:
+        del request
+        raise RuntimeError(self.error_message)
+
+    def rebuild(self, request) -> SyncResult:
+        return self.sync(request)
+
+
 class FakeCheckpointRepository(CheckpointRepository):
     def __init__(
         self,
@@ -93,6 +106,34 @@ def test_sync_all_honors_fail_fast(tmp_path: Path, monkeypatch) -> None:
     assert result.status == "failed"
     step_names = [step["job_name"] for step in result.details["steps"]]
     assert step_names == ["sync-13f", "sync-8k"]
+
+
+def test_sync_all_converts_recoverable_step_exception_to_failed_result(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("EDGAR_IDENTITY", "Tester tester@example.com")
+    settings = Settings.load()
+    checkpoints = CheckpointRepository(tmp_path / "checkpoints.json")
+    orchestrator = BackendOrchestrator(
+        settings=settings,
+        checkpoints=checkpoints,
+        thirteenf_service=RaisingService("sync-13f"),
+        eightk_service=FakeService("sync-8k"),
+        thirteendg_service=FakeService("sync-13dg"),
+        marts_service=FakeService("rebuild-marts"),
+    )
+
+    result = orchestrator.sync_all(SyncAllRequest(with_marts=True))
+
+    assert result.status == "failed"
+    assert result.error_summary is not None
+    assert "sync-13f" in result.error_summary
+    assert "temporary backend failure" in result.error_summary
+    assert [step["job_name"] for step in result.details["steps"]] == [
+        "sync-13f",
+        "sync-8k",
+        "sync-13dg",
+        "rebuild-marts",
+    ]
+    assert result.details["steps"][0]["status"] == "failed"
 
 
 def test_backfill_tickers_routes_to_service(tmp_path: Path, monkeypatch) -> None:

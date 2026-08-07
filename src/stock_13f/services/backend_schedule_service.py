@@ -22,6 +22,7 @@ from stock_13f.domain.sync_requests import Sync13DGRequest
 from stock_13f.domain.sync_requests import Sync13FRequest
 from stock_13f.domain.sync_requests import Sync8KRequest
 from stock_13f.domain.sync_requests import SyncAllRequest
+from stock_13f.services.backend_orchestrator import BACKEND_RECOVERABLE_ERRORS
 from stock_13f.services.backend_orchestrator import BackendOrchestrator
 
 
@@ -299,7 +300,19 @@ class BackendScheduleService:
         )
 
     def _execute_job(self, job: ScheduledJobConfig, current_time: datetime) -> None:
-        result = self._run_backend_command(job)
+        try:
+            result = self._run_backend_command(job)
+        except BACKEND_RECOVERABLE_ERRORS as exc:
+            LOGGER.exception(
+                "scheduled_backend_job_exception",
+                extra={
+                    "scheduled_job": job.name,
+                    "backend_command": job.command,
+                    "scheduled_time_et": current_time.isoformat(),
+                    "exception_type": type(exc).__name__,
+                },
+            )
+            return
         payload = {
             "scheduled_job": job.name,
             "backend_command": job.command,

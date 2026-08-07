@@ -3,8 +3,10 @@
 
 import argparse
 import json
+import logging
 from pathlib import Path
 import sys
+from types import TracebackType
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +15,7 @@ if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 from stock_13f.core.logging import configure_logging
+from stock_13f.core.logging import DEFAULT_LOG_PATH
 from stock_13f.core.settings import Settings
 from stock_13f.domain.sync_requests import Audit13DGCoverageRequest
 from stock_13f.domain.sync_requests import BackfillTickersRequest
@@ -22,6 +25,9 @@ from stock_13f.domain.sync_requests import Sync13FRequest
 from stock_13f.domain.sync_requests import Sync8KRequest
 from stock_13f.domain.sync_requests import SyncAllRequest
 from stock_13f.services.backend_orchestrator import BackendOrchestrator
+
+
+LOGGER = logging.getLogger("stock_13f.scripts.backend_sync")
 
 
 def _split_tickers(raw_value: str | None) -> tuple[str, ...]:
@@ -40,6 +46,7 @@ def _add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--log-level", default="INFO")
     parser.add_argument("--job-id")
+    parser.add_argument("--log-file", default=str(REPO_ROOT / DEFAULT_LOG_PATH))
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -106,7 +113,8 @@ def build_parser() -> argparse.ArgumentParser:
     sync_all.add_argument("--with-marts", action="store_true")
     sync_all.add_argument("--fail-fast", action="store_true")
 
-    subparsers.add_parser("show-status", help="Show the latest checkpoint status for every backend job.")
+    show_status = subparsers.add_parser("show-status", help="Show the latest checkpoint status for every backend job.")
+    _add_common_args(show_status)
     return parser
 
 
@@ -122,13 +130,33 @@ def _print_result(result) -> None:
         "error_summary": result.error_summary,
         "details": result.details,
     }
+    if result.status == "failed":
+        LOGGER.error(
+            "backend_sync_failed",
+            extra={"job_name": result.job_name, "error_summary": result.error_summary},
+        )
     print(json.dumps(payload, indent=2, ensure_ascii=False))
+
+
+def _log_uncaught_exception(
+    exc_type: type[BaseException],
+    exc_value: BaseException,
+    exc_traceback: TracebackType | None,
+) -> None:
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+    LOGGER.error(
+        "backend_sync_uncaught_exception",
+        exc_info=(exc_type, exc_value, exc_traceback),
+    )
 
 
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
-    configure_logging(args.log_level)
+    configure_logging(args.log_level, Path(args.log_file))
+    sys.excepthook = _log_uncaught_exception
     settings = Settings.load()
     orchestrator = BackendOrchestrator(settings)
 

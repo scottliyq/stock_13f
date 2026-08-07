@@ -7,6 +7,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = REPO_ROOT / "src"
 sys.path.insert(0, str(SRC_DIR))
 
+from stock_13f.core.supabase import SupabaseError
 from stock_13f.domain.sync_results import SyncResult
 from stock_13f.repositories.checkpoints import CheckpointRepository
 
@@ -94,3 +95,21 @@ def test_checkpoint_repository_dual_writes_remote_status(tmp_path: Path) -> None
     assert supabase_client.on_conflict == "job_name"
     assert supabase_client.rows[0]["job_name"] == "sync-13dg"
     assert supabase_client.rows[0]["cursor"] == {"mode": "manager"}
+
+
+def test_checkpoint_repository_does_not_abort_sync_when_remote_write_fails(tmp_path: Path) -> None:
+    class FailingSupabaseClient(FakeSupabaseClient):
+        def upsert_rows(self, table_name, rows, on_conflict):
+            del table_name, rows, on_conflict
+            raise SupabaseError("checkpoint endpoint unavailable")
+
+    repository = CheckpointRepository(
+        tmp_path / "checkpoints.json",
+        supabase_client=FailingSupabaseClient(),
+    )
+    result = SyncResult.success(
+        job_name="sync-all",
+        started_at=datetime.now(timezone.utc),
+    )
+
+    repository.record_result(result)

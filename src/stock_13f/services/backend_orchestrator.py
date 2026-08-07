@@ -2,6 +2,10 @@
 
 from dataclasses import replace
 from datetime import datetime, timezone
+import logging
+
+import httpx
+import requests
 
 from stock_13f.adapters.structured_13f_dataset import Structured13FDatasetAdapter
 from stock_13f.core.settings import Settings
@@ -21,6 +25,21 @@ from stock_13f.services.marts_service import MartsService
 from stock_13f.services.ticker_backfill_service import TickerBackfillService
 from stock_13f.services.thirteendg_sync_service import ThirteenDGSyncService
 from stock_13f.services.thirteenf_sync_service import ThirteenFSyncService
+
+
+LOGGER = logging.getLogger("stock_13f.services.backend_orchestrator")
+BACKEND_RECOVERABLE_ERRORS: tuple[type[BaseException], ...] = (
+    AttributeError,
+    IndexError,
+    KeyError,
+    OSError,
+    RuntimeError,
+    TimeoutError,
+    TypeError,
+    ValueError,
+    httpx.HTTPError,
+    requests.RequestException,
+)
 
 
 class BackendOrchestrator:
@@ -92,17 +111,15 @@ class BackendOrchestrator:
         ]
         results: list[SyncResult] = []
         for job_name, step_request in step_requests:
-            if job_name == "sync-13f":
-                result = self.sync_13f(step_request)
-            elif job_name == "sync-8k":
-                result = self.sync_8k(step_request)
-            else:
-                result = self.sync_13dg(step_request)
+            result = self._run_sync_all_step(job_name, step_request)
             results.append(result)
             warnings.extend(result.warnings)
             rows_written += result.rows_written
             checkpoints_updated += result.checkpoints_updated
-            details["steps"].append({"job_name": result.job_name, "status": result.status})
+            step_details: dict[str, object] = {"job_name": result.job_name, "status": result.status}
+            if result.error_summary:
+                step_details["error_summary"] = result.error_summary
+            details["steps"].append(step_details)
             if result.status == "failed" and request.fail_fast:
                 aggregate = SyncResult.failed(
                     job_name="sync-all",
@@ -119,12 +136,18 @@ class BackendOrchestrator:
                 dry_run=request.dry_run,
                 log_level=request.log_level,
             )
-            marts_result = self.rebuild_marts(marts_request)
+            marts_result = self._run_sync_all_step("rebuild-marts", marts_request)
             results.append(marts_result)
             warnings.extend(marts_result.warnings)
             rows_written += marts_result.rows_written
             checkpoints_updated += marts_result.checkpoints_updated
-            details["steps"].append({"job_name": marts_result.job_name, "status": marts_result.status})
+            marts_step_details: dict[str, object] = {
+                "job_name": marts_result.job_name,
+                "status": marts_result.status,
+            }
+            if marts_result.error_summary:
+                marts_step_details["error_summary"] = marts_result.error_summary
+            details["steps"].append(marts_step_details)
             if marts_result.status == "failed":
                 aggregate = SyncResult.failed(
                     job_name="sync-all",
@@ -158,6 +181,34 @@ class BackendOrchestrator:
             )
         self._checkpoints.record_result(aggregate, cursor={"steps": details["steps"]})
         return aggregate
+
+    def _run_sync_all_step(
+        self,
+        job_name: str,
+        step_request: Sync13FRequest | Sync8KRequest | Sync13DGRequest | RebuildMartsRequest,
+    ) -> SyncResult:
+        started_at = datetime.now(timezone.utc)
+        try:
+            if job_name == "sync-13f":
+                return self.sync_13f(step_request)
+            if job_name == "sync-8k":
+                return self.sync_8k(step_request)
+            if job_name == "sync-13dg":
+                return self.sync_13dg(step_request)
+            return self.rebuild_marts(step_request)
+        except BACKEND_RECOVERABLE_ERRORS as exc:
+            error_summary = f"{type(exc).__name__}: {exc}"
+            LOGGER.exception(
+                "sync_all_step_failed",
+                extra={"job_name": job_name, "exception_type": type(exc).__name__},
+            )
+            return SyncResult.failed(
+                job_name=job_name,
+                started_at=started_at,
+                error_summary=error_summary,
+                warnings=[f"{job_name} raised a recoverable exception; later sync-all steps continued."],
+                details={"exception_type": type(exc).__name__},
+            )
 
     def show_status(self) -> list[dict[str, object]]:
         try:

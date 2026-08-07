@@ -1,4 +1,5 @@
 import importlib.util
+import logging
 import sys
 from pathlib import Path
 
@@ -42,3 +43,28 @@ def test_split_tickers_normalizes_values() -> None:
 def test_split_identifiers_preserves_cik_text_values() -> None:
     assert backend_sync._split_identifiers("2045724, 1336528") == ("2045724", "1336528")
     assert backend_sync._split_identifiers("") == ()
+
+
+def test_configure_logging_writes_errors_to_file(tmp_path: Path) -> None:
+    log_path = tmp_path / "backend_sync.log"
+
+    backend_sync.configure_logging("INFO", log_path=log_path)
+    logging.getLogger("test_backend_sync_cli").error("file logging regression marker")
+    for handler in logging.getLogger().handlers:
+        handler.flush()
+
+    assert "file logging regression marker" in log_path.read_text(encoding="utf-8")
+
+
+def test_uncaught_exception_hook_writes_traceback_to_file(tmp_path: Path) -> None:
+    log_path = tmp_path / "backend_sync.log"
+    backend_sync.configure_logging("INFO", log_path=log_path)
+
+    try:
+        raise RuntimeError("uncaught regression marker")
+    except RuntimeError as exc:
+        backend_sync._log_uncaught_exception(type(exc), exc, exc.__traceback__)
+
+    log_text = log_path.read_text(encoding="utf-8")
+    assert "uncaught regression marker" in log_text
+    assert "Traceback" in log_text

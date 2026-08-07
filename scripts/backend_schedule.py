@@ -12,6 +12,7 @@ if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 from stock_13f.core.logging import configure_logging
+from stock_13f.core.logging import DEFAULT_LOG_PATH
 from stock_13f.core.settings import Settings
 from stock_13f.services.backend_orchestrator import BackendOrchestrator
 from stock_13f.services.backend_schedule_service import BackendScheduleService
@@ -26,6 +27,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to the scheduler TOML config file.",
     )
     parser.add_argument("--log-level", default="INFO")
+    parser.add_argument("--log-file", default=str(REPO_ROOT / DEFAULT_LOG_PATH))
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--list-jobs", action="store_true")
     parser.add_argument(
@@ -39,7 +41,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
-    configure_logging(args.log_level)
+    configure_logging(args.log_level, Path(args.log_file))
     config = BackendSchedulerConfig.load(Path(args.config))
     service = BackendScheduleService(
         config=config,

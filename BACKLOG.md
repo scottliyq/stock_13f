@@ -6,6 +6,12 @@
 - 不再在 `reports/` 顶层新增按日期命名的修改记录文件。
 - `reports/13_following/` 等业务报告、分析产物和数据文件继续保留，不纳入本次清理。
 
+## 2026-08-08
+
+- 查询本地 13F structured ZIP、Supabase `mart_13f_quarterly_movers` 与 `raw_13f_sync_runs`，均未发现 `2026-06-30` Q2 数据；SEC 对应 structured dataset URL 当前返回 404，因此本次未执行 Q2 入库或 Quarterly movers 更新。
+- 修正 13F 导出与后台同步的 `--skip-download` 语义：cache-only 模式现在只读取本地 ZIP，缺失时明确失败，不再意外触发下载；后续拿到更新后的可解析 ZIP 后，可按 `report_date` 重跑并替换该季度 movers 快照。
+- 当前仍不支持从单条 13F filing/raw holdings 增量拼接 Quarterly movers；需要 SEC structured ZIP 或现有格式的完整/更新快照。
+
 ## 2026-07-21
 
 - 排查 `python scripts/backend_sync.py sync-all --with-marts` 长时间运行后的异常退出：补充轮转文件日志、未捕获异常 traceback 记录，并让 `sync-all`/scheduler 在可恢复的网络、数据库和数据解析异常下记录失败结果后继续后续任务；新增对应回归测试。

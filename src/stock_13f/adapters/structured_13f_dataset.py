@@ -281,11 +281,19 @@ class Structured13FDatasetAdapter:
         manager_security_latest_rows: list[dict[str, object]] = []
         previous_quarter_data = None
         for report_date in comparison_report_dates_asc:
-            zip_path = self._module.ensure_dataset_zip(
-                report_date=report_date,
-                cache_dir=dataset_cache_dir,
-                user_agent=user_agent,
-            )
+            if skip_download:
+                zip_path = self._module.dataset_zip_path(dataset_cache_dir, report_date)
+                if not zip_path.exists():
+                    raise FileNotFoundError(
+                        f"Local 13F dataset is missing for {report_date}; "
+                        "remove --skip-download or place the ZIP in the configured cache first."
+                    )
+            else:
+                zip_path = self._module.ensure_dataset_zip(
+                    report_date=report_date,
+                    cache_dir=dataset_cache_dir,
+                    user_agent=user_agent,
+                )
             current_quarter_data = self._load_quarter_data_cached(zip_path, report_date)
             if previous_quarter_data is not None and report_date in target_report_dates_desc:
                 summaries = self._module.summarize_quarter(

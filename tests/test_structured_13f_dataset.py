@@ -58,6 +58,67 @@ class FakeExportModule:
         return mapping[cusip]
 
 
+class CacheOnlyExportModule:
+    SECURITY_TYPES = ("stock", "etf")
+
+    def __init__(self) -> None:
+        self.ensure_calls = 0
+
+    def recent_report_dates(self, latest_report_date: str, quarter_count: int) -> list[str]:
+        del latest_report_date
+        return ["2026-03-31", "2025-12-31"][:quarter_count]
+
+    def dataset_zip_path(self, cache_dir: Path, report_date: str) -> Path:
+        return cache_dir / f"{report_date}.zip"
+
+    def ensure_dataset_zip(self, report_date: str, cache_dir: Path, user_agent: str) -> Path:
+        del report_date, cache_dir, user_agent
+        self.ensure_calls += 1
+        raise AssertionError("cache-only builds must not call the downloader")
+
+    def load_quarter_data(self, zip_path: Path, report_date: str) -> FakeQuarterData:
+        assert zip_path.exists()
+        return FakeQuarterData(report_date=report_date, manager_names_by_cik={}, holdings_by_cik={})
+
+    def summarize_quarter(
+        self,
+        current_data: FakeQuarterData,
+        previous_data: FakeQuarterData,
+    ) -> list[dict[str, object]]:
+        del current_data, previous_data
+        return []
+
+    def build_csv_rows(
+        self,
+        report_date: str,
+        summaries: list[dict[str, object]],
+        security_type: str,
+        top_limit: int,
+    ) -> list[dict[str, object]]:
+        del report_date, summaries, security_type, top_limit
+        return []
+
+
+def test_build_quarterly_mover_rows_cache_only_does_not_download(tmp_path: Path) -> None:
+    module = CacheOnlyExportModule()
+    adapter = Structured13FDatasetAdapter(REPO_ROOT, export_module=module)
+    (tmp_path / "2026-03-31.zip").touch()
+    (tmp_path / "2025-12-31.zip").touch()
+
+    result = adapter.build_quarterly_mover_rows(
+        dataset_cache_dir=tmp_path,
+        user_agent="test-agent",
+        quarter_count=1,
+        top_limit=100,
+        latest_report_date="2026-03-31",
+        skip_download=True,
+    )
+
+    assert result.report_dates == ["2026-03-31"]
+    assert result.rows == []
+    assert module.ensure_calls == 0
+
+
 def test_build_manager_rebalance_snapshot_summarizes_latest_manager_changes(tmp_path: Path) -> None:
     previous = FakeQuarterData(
         report_date="2025-12-31",

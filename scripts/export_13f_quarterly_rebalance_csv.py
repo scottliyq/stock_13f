@@ -250,6 +250,16 @@ def ensure_dataset_zip(report_date: str, cache_dir: Path, user_agent: str) -> Pa
     return zip_path
 
 
+def local_dataset_zip(report_date: str, cache_dir: Path) -> Path:
+    zip_path = dataset_zip_path(cache_dir, report_date)
+    if not zip_path.exists():
+        raise MonitorError(
+            f"Local 13F dataset is missing for {report_date}; "
+            "remove --skip-download or place the ZIP in the configured cache first."
+        )
+    return zip_path
+
+
 def security_display_name(name_of_issuer: str, title_of_class: str) -> str:
     normalized_title = title_of_class.strip()
     if not normalized_title:
@@ -755,7 +765,11 @@ def export_quarterly_rebalance_csvs(
     output_paths_by_report_and_type: dict[tuple[str, str], Path] = {}
     previous_quarter_data: QuarterData | None = None
     for report_date in comparison_report_dates_asc:
-        zip_path = ensure_dataset_zip(report_date=report_date, cache_dir=dataset_cache_dir, user_agent=user_agent)
+        zip_path = (
+            local_dataset_zip(report_date, dataset_cache_dir)
+            if skip_download
+            else ensure_dataset_zip(report_date=report_date, cache_dir=dataset_cache_dir, user_agent=user_agent)
+        )
         current_quarter_data = load_quarter_data(zip_path=zip_path, report_date=report_date)
         if previous_quarter_data is not None and report_date in target_report_dates_desc:
             summaries = summarize_quarter(

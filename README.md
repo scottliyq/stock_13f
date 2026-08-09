@@ -111,6 +111,8 @@ python scripts/backend_schedule.py --list-jobs
 python scripts/backend_schedule.py
 ```
 
+定时任务中的 13F job 已使用全市场 EDGAR filing 增量流程，不再默认下载 SEC structured ZIP；`structured` 仅保留给手动历史回补和兼容场景。
+
 导出最近 1 个季度的 `top100` 股票/ETF 调仓 CSV：
 
 ```bash
@@ -184,6 +186,30 @@ python scripts/export_13f_quarterly_rebalance_csv.py \
   --openfigi-batch-size 5 \
   --openfigi-sleep-seconds 2
 ```
+
+## Supabase 全市场 13F filing 增量
+
+`config/backend_schedule.toml` 中的 `sync_13f_baseline` 和 `sync_13f_peak_window` 已切换到以下同一套流程。调度器会自动选择最近已结束季度，例如 2026-08 运行时使用 `2026-06-30`，并按 accession 增量处理。
+
+当 SEC structured ZIP 尚未发布，但已经有机构提交季度 13F 时，先在 Supabase SQL Editor 执行：
+
+```sql
+-- sql/0005_13f_incremental_filings.sql
+```
+
+然后按报告期同步所有已提交机构（不是 watchlist）：
+
+```bash
+python scripts/backend_sync.py sync-13f \
+  --source filings \
+  --latest-report-date 2026-06-30 \
+  --filing-date-from 2026-07-01 \
+  --filing-date-to 2026-08-09 \
+  --quarters 1 \
+  --top-limit 100
+```
+
+同步按 accession 写入 `raw_13f_filings` 并去重；重复运行只解析新 filing/修订 filing，然后重建并写入 `mart_13f_quarterly_movers`，前端直接读取该 Supabase mart。
 
 ## 测试
 

@@ -1,12 +1,20 @@
 """13F sync service implementation."""
 
-from datetime import datetime, timezone
+from datetime import date
+from datetime import datetime, timedelta, timezone
 import json
 import logging
 from pathlib import Path
+from urllib.error import HTTPError
+from urllib.error import URLError
 from urllib.request import Request
 from urllib.request import urlopen
 
+from stock_13f.adapters.edgartools_client import Edgar13FParseError
+from stock_13f.adapters.edgartools_client import EdgarRateLimitError
+from stock_13f.adapters.edgartools_client import EdgarToolsClient
+from stock_13f.adapters.edgartools_client import EdgarToolsUnavailable
+from stock_13f.adapters.structured_13f_dataset import QuarterlyMoverBuildResult
 from stock_13f.adapters.structured_13f_dataset import Structured13FDatasetAdapter
 from stock_13f.core.edgar import apply_edgar_environment
 from stock_13f.core.settings import Settings
@@ -38,6 +46,8 @@ class ThirteenFSyncService:
         self._settings = settings
         self._checkpoints = checkpoints
         supabase_client = build_supabase_client(settings)
+        self._supabase_client = supabase_client
+        self._edgar_client = EdgarToolsClient()
         self._adapter = adapter or Structured13FDatasetAdapter(settings.paths.repo_root)
         self._raw_repository = raw_repository or Raw13FRepository(
             settings.paths.backend_state_dir / "raw_13f_manifest.json",
@@ -78,8 +88,15 @@ class ThirteenFSyncService:
             SEC_COMPANY_TICKERS_URL,
             headers={"User-Agent": self._settings.edgar_identity},
         )
-        with urlopen(request, timeout=30) as response:
-            payload = json.loads(response.read().decode())
+        try:
+            with urlopen(request, timeout=30) as response:
+                payload = json.loads(response.read().decode())
+        except (HTTPError, URLError, TimeoutError) as exc:
+            LOGGER.warning(
+                "company_tickers_refresh_failed",
+                extra={"status": getattr(exc, "code", None), "error": str(exc)},
+            )
+            return
         cache_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
 
     def _resolve_ticker(self, row: dict[str, object]) -> str:
@@ -162,6 +179,7 @@ class ThirteenFSyncService:
                 warnings=warnings,
                 details={
                     "mode": request.mode,
+                    "source": request.source,
                     "report_dates": report_dates,
                     "top_limit": request.top_limit,
                 },
@@ -174,15 +192,25 @@ class ThirteenFSyncService:
 
         try:
             tracked_manager_ciks = {str(manager.manager_cik) for manager in list_default_managers() if manager.is_active}
-            build_result = self._adapter.build_quarterly_mover_rows(
-                dataset_cache_dir=self._settings.paths.data_dir / "13f_universe",
-                user_agent=self._settings.edgar_identity,
-                quarter_count=request.quarters,
-                top_limit=request.top_limit,
-                latest_report_date=resolved_latest_report_date,
-                skip_download=request.skip_download,
-                manager_ciks=tracked_manager_ciks,
-            )
+            incremental_details: dict[str, object] = {}
+            if request.source == "filings":
+                build_result, incremental_details = self._build_from_incremental_filings(
+                    request=request,
+                    report_date=resolved_latest_report_date,
+                    manager_ciks=tracked_manager_ciks,
+                )
+            elif request.source == "structured":
+                build_result = self._adapter.build_quarterly_mover_rows(
+                    dataset_cache_dir=self._settings.paths.data_dir / "13f_universe",
+                    user_agent=self._settings.edgar_identity,
+                    quarter_count=request.quarters,
+                    top_limit=request.top_limit,
+                    latest_report_date=resolved_latest_report_date,
+                    skip_download=request.skip_download,
+                    manager_ciks=tracked_manager_ciks,
+                )
+            else:
+                raise ValueError(f"Unsupported 13F source: {request.source}")
             if request.enrich_openfigi:
                 security_rows_for_enrichment = [
                     *build_result.rows,
@@ -236,6 +264,7 @@ class ThirteenFSyncService:
             )
             manifest = {
                 "latest_report_date": build_result.latest_report_date,
+                "source": request.source,
                 "quarters": request.quarters,
                 "top_limit": request.top_limit,
                 "report_dates": build_result.report_dates,
@@ -245,6 +274,8 @@ class ThirteenFSyncService:
                 "manager_security_latest_count": len(security_latest_rows_by_key),
                 "output_paths": [],
             }
+            manifest.update(incremental_details)
+            upserted_rows += int(incremental_details.get("new_filing_count", 0) or 0)
             self._raw_repository.write_manifest(manifest)
             LOGGER.info("sync_13f_completed", extra={"report_dates": build_result.report_dates, "row_count": len(mover_rows)})
             result = SyncResult.success(
@@ -260,7 +291,14 @@ class ThirteenFSyncService:
                 cursor={"latest_report_date": resolved_latest_report_date, "quarters": request.quarters},
             )
             return result
-        except SupabaseError as exc:
+        except (
+            SupabaseError,
+            EdgarToolsUnavailable,
+            Edgar13FParseError,
+            EdgarRateLimitError,
+            FileNotFoundError,
+            ValueError,
+        ) as exc:
             result = SyncResult.failed(
                 job_name="sync-13f",
                 started_at=started_at,
@@ -273,3 +311,70 @@ class ThirteenFSyncService:
                 cursor={"latest_report_date": resolved_latest_report_date, "quarters": request.quarters},
             )
             return result
+
+    def _build_from_incremental_filings(
+        self,
+        request: Sync13FRequest,
+        report_date: str,
+        manager_ciks: set[str],
+    ) -> tuple[QuarterlyMoverBuildResult, dict[str, object]]:
+        if self._supabase_client is None:
+            raise SupabaseError("source=filings requires SUPABASE_SECRET_KEY and the raw_13f_filings table.")
+        if not request.latest_report_date:
+            raise ValueError("source=filings requires --latest-report-date, for example 2026-06-30.")
+        filing_date_from = request.filing_date_from or (
+            date.fromisoformat(report_date) + timedelta(days=1)
+        ).isoformat()
+        filing_date_to = request.filing_date_to or date.today().isoformat()
+        existing_accessions = self._raw_repository.fetch_filing_accessions(report_date)
+        discovered_filings = self._edgar_client.search_all_13f_filings(
+            filing_date_from=filing_date_from,
+            filing_date_to=filing_date_to,
+        )
+        new_rows: list[dict[str, object]] = []
+        new_filing_count = 0
+        parse_failures = 0
+        for filing in discovered_filings:
+            accession = str(getattr(filing, "accession_number", "") or "").strip()
+            if not accession or accession in existing_accessions:
+                continue
+            try:
+                payload = self._edgar_client.build_13f_payload(
+                    filing,
+                    user_agent=self._settings.edgar_identity,
+                )
+                if str(payload.get("report_date", "") or "") != report_date:
+                    continue
+                new_rows.append(payload)
+                if len(new_rows) >= 100:
+                    new_filing_count += self._raw_repository.upsert_filing_rows(new_rows)
+                    new_rows.clear()
+            except Edgar13FParseError as exc:
+                parse_failures += 1
+                LOGGER.warning(
+                    "sync_13f_filing_parse_failed",
+                    extra={"accession_number": accession, "error": str(exc)},
+                )
+        new_filing_count += self._raw_repository.upsert_filing_rows(new_rows)
+        raw_rows = self._raw_repository.fetch_filing_rows(report_date)
+        previous_report_date = self._adapter.previous_report_date(report_date)
+        previous_quarter_data = self._adapter.load_quarter_data_from_cache(
+            self._settings.paths.data_dir / "13f_universe",
+            previous_report_date,
+        )
+        build_result = self._adapter.build_quarterly_mover_rows_from_raw_filings(
+            raw_filing_rows=raw_rows,
+            previous_quarter_data=previous_quarter_data,
+            report_date=report_date,
+            top_limit=request.top_limit,
+            manager_ciks=manager_ciks,
+        )
+        return build_result, {
+            "filing_date_from": filing_date_from,
+            "filing_date_to": filing_date_to,
+            "discovered_filing_count": len(discovered_filings),
+            "new_filing_count": new_filing_count,
+            "raw_filing_count": len(raw_rows),
+            "parse_failure_count": parse_failures,
+            "partial_period": True,
+        }

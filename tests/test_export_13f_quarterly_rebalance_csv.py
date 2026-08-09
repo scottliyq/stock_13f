@@ -246,6 +246,56 @@ def test_summarize_quarter_tracks_reductions_and_full_exits() -> None:
     assert apple_summary.total_holding_value_usd == 70
 
 
+def test_summarize_quarter_partial_period_ignores_unfiled_manager_exits() -> None:
+    previous_data = QuarterData(
+        report_date="2025-06-30",
+        manager_names_by_cik={"0001": "Manager One", "0002": "Manager Two"},
+        holdings_by_cik={
+            "0001": {
+                "037833100|COMMON|COM": ManagerHolding(
+                    name_of_issuer="APPLE INC",
+                    title_of_class="COM",
+                    cusip="037833100",
+                    put_call="",
+                    value_usd=100,
+                )
+            },
+            "0002": {
+                "594918104|COMMON|COM": ManagerHolding(
+                    name_of_issuer="MICROSOFT CORP",
+                    title_of_class="COM",
+                    cusip="594918104",
+                    put_call="",
+                    value_usd=90,
+                )
+            },
+        },
+    )
+    current_data = QuarterData(
+        report_date="2025-09-30",
+        manager_names_by_cik={"0001": "Manager One"},
+        holdings_by_cik={
+            "0001": {
+                "037833100|COMMON|COM": ManagerHolding(
+                    name_of_issuer="APPLE INC",
+                    title_of_class="COM",
+                    cusip="037833100",
+                    put_call="",
+                    value_usd=70,
+                )
+            }
+        },
+    )
+
+    summaries = summarize_quarter(
+        current_data=current_data,
+        previous_data=previous_data,
+        include_previous_only=False,
+    )
+
+    assert [summary.cusip for summary in summaries] == ["037833100"]
+
+
 def test_export_quarterly_rebalance_csvs_removes_stale_top_limit_files(tmp_path: Path) -> None:
     output_dir = tmp_path / "reports"
     stale_path = output_dir / "2025-09-30_13f_quarterly_rebalance_stock_top20.csv"

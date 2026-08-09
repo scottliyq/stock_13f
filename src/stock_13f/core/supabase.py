@@ -146,8 +146,9 @@ class SupabaseRestClient:
         offset: int = 0,
         filters: dict[str, str] | None = None,
         order: str | None = None,
+        select: str = "*",
     ) -> list[dict[str, object]]:
-        params: dict[str, str] = {"select": "*", "limit": str(limit), "offset": str(offset)}
+        params: dict[str, str] = {"select": select, "limit": str(limit), "offset": str(offset)}
         if filters is not None:
             params.update(filters)
         if order is not None:

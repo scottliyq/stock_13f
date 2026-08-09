@@ -482,9 +482,12 @@ def get_or_create_accumulator(
 def summarize_quarter(
     current_data: QuarterData,
     previous_data: QuarterData,
+    include_previous_only: bool = True,
 ) -> list[QuarterlySecuritySummary]:
     accumulators: dict[str, SummaryAccumulator] = {}
-    all_ciks = set(current_data.holdings_by_cik) | set(previous_data.holdings_by_cik)
+    all_ciks = set(current_data.holdings_by_cik)
+    if include_previous_only:
+        all_ciks |= set(previous_data.holdings_by_cik)
     for cik in all_ciks:
         current_holdings = current_data.holdings_by_cik.get(cik, {})
         previous_holdings = previous_data.holdings_by_cik.get(cik, {})

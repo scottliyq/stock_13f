@@ -98,9 +98,9 @@ weekdays = ["mon", "tue", "wed", "thu", "fri"]
 
 [jobs.request]
 mode = "incremental"
+source = "filings"
 quarters = 1
 top_limit = 100
-skip_download = false
 
 [[jobs]]
 name = "sync_13f_peak_window"
@@ -116,6 +116,6 @@ focus_days_after = 2
 
 [jobs.request]
 mode = "incremental"
+source = "filings"
 quarters = 1
 top_limit = 100
-skip_download = false

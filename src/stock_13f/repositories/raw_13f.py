@@ -15,11 +15,67 @@ class Raw13FRepository:
         path: Path,
         supabase_client: SupabaseRestClient | None = None,
         table_name: str = "raw_13f_sync_runs",
+        filing_table_name: str = "raw_13f_filings",
     ) -> None:
         self._path = path
         self._path.parent.mkdir(parents=True, exist_ok=True)
         self._supabase_client = supabase_client
         self._table_name = table_name
+        self._filing_table_name = filing_table_name
+
+    def upsert_filing_rows(
+        self,
+        rows: list[dict[str, object]],
+        batch_size: int = 100,
+    ) -> int:
+        if self._supabase_client is None:
+            return 0
+        written = 0
+        for start in range(0, len(rows), batch_size):
+            batch = rows[start : start + batch_size]
+            written += self._supabase_client.upsert_rows(
+                self._filing_table_name,
+                batch,
+                on_conflict="accession_number",
+            )
+        return written
+
+    def fetch_filing_rows(
+        self,
+        report_date: str,
+        page_size: int = 1000,
+    ) -> list[dict[str, object]]:
+        if self._supabase_client is None:
+            return []
+        rows: list[dict[str, object]] = []
+        offset = 0
+        while True:
+            page = self._supabase_client.fetch_rows(
+                self._filing_table_name,
+                limit=page_size,
+                offset=offset,
+                filters={"report_date": f"eq.{report_date}"},
+                order="manager_cik.asc,filing_date.desc,accession_number.desc",
+                select="accession_number",
+            )
+            if not page:
+                break
+            rows.extend(page)
+            if len(page) < page_size:
+                break
+            offset += page_size
+        return rows
+
+    def fetch_filing_accessions(
+        self,
+        report_date: str,
+        page_size: int = 1000,
+    ) -> set[str]:
+        return {
+            str(row.get("accession_number", "") or "").strip()
+            for row in self.fetch_filing_rows(report_date, page_size=page_size)
+            if str(row.get("accession_number", "") or "").strip()
+        }
 
     def write_manifest(self, payload: dict[str, object]) -> None:
         self._path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")

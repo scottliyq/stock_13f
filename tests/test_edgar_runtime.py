@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import sys
 
 
@@ -47,8 +48,10 @@ def test_apply_edgar_environment_uses_system_certs_when_edgar_is_available(tmp_p
 
     monkeypatch.setattr("stock_13f.core.edgar.util.find_spec", lambda name: object() if name == "edgar" else None)
     monkeypatch.setattr("stock_13f.core.edgar.importlib.import_module", lambda name: FakeEdgarModule())
+    monkeypatch.delenv("EDGAR_RATE_LIMIT_PER_SEC", raising=False)
 
     settings = build_settings(tmp_path)
     apply_edgar_environment(settings)
 
     assert captured["use_system_certs"] is True
+    assert os.environ["EDGAR_RATE_LIMIT_PER_SEC"] == "2"

@@ -176,6 +176,21 @@ def test_scheduler_triggers_13f_peak_job_inside_focus_window() -> None:
     assert orchestrator.calls[0][1].mode == "manager"
     assert orchestrator.calls[0][1].form_scope == "13d"
     assert orchestrator.calls[1][1].quarters == 1
+    assert orchestrator.calls[1][1].source == "filings"
+    assert orchestrator.calls[1][1].latest_report_date == "2026-03-31"
+
+
+def test_scheduler_rolls_13f_report_date_to_latest_completed_quarter() -> None:
+    config = BackendSchedulerConfig.load(REPO_ROOT / "config" / "backend_schedule.toml")
+    orchestrator = FakeOrchestrator()
+    service = BackendScheduleService(config=config, orchestrator=orchestrator, dry_run=True)
+
+    service.run_due_jobs(datetime(2026, 8, 10, 10, 0, tzinfo=ET))
+
+    thirteenf_requests = [request for command, request in orchestrator.calls if command == "sync-13f"]
+    assert len(thirteenf_requests) == 1
+    assert thirteenf_requests[0].source == "filings"
+    assert thirteenf_requests[0].latest_report_date == "2026-06-30"
 
 
 def test_scheduler_triggers_daily_13dg_audit_after_close() -> None:

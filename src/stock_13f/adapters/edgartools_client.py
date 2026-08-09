@@ -4,6 +4,14 @@ from datetime import date
 from datetime import timedelta
 import importlib
 from importlib import util
+import os
+import re
+import time
+from urllib.error import HTTPError
+from urllib.error import URLError
+from urllib.request import Request
+from urllib.request import urlopen
+import xml.etree.ElementTree as ET
 
 
 def _normalize_text(value: object) -> str:
@@ -32,11 +40,20 @@ class EdgarTickerLookupError(RuntimeError):
     """Raised when a ticker cannot be resolved by edgartools."""
 
 
+class Edgar13FParseError(RuntimeError):
+    """Raised when a 13F information table cannot be parsed."""
+
+
+class EdgarRateLimitError(RuntimeError):
+    """Raised when SEC temporarily blocks an edgartools request."""
+
+
 class EdgarToolsClient:
     """Lazy wrapper to keep edgartools optional until sync commands are used."""
 
     def __init__(self) -> None:
         self._edgar_module = None
+        self._last_sec_request_at: float | None = None
 
     def is_available(self) -> bool:
         return util.find_spec("edgar") is not None
@@ -99,6 +116,258 @@ class EdgarToolsClient:
         if hasattr(filings, "filter"):
             filings = filings.filter(filing_date=filing_date_range)
         return list(filings[:max_filings])
+
+    def search_all_13f_filings(
+        self,
+        filing_date_from: str,
+        filing_date_to: str,
+    ) -> list[object]:
+        edgar = self._edgar()
+        start_date = date.fromisoformat(filing_date_from)
+        end_date = date.fromisoformat(filing_date_to)
+        if end_date < start_date:
+            raise ValueError("filing_date_to must not be earlier than filing_date_from")
+
+        filings_by_accession: dict[str, object] = {}
+        quarter_start = date(start_date.year, ((start_date.month - 1) // 3) * 3 + 1, 1)
+        http_requests = importlib.import_module("edgar.httprequests")
+        too_many_requests_error = getattr(http_requests, "TooManyRequestsError")
+        while quarter_start <= end_date:
+            quarter = ((quarter_start.month - 1) // 3) + 1
+            try:
+                filings = edgar.get_filings(
+                    year=quarter_start.year,
+                    quarter=quarter,
+                    form=["13F-HR", "13F-HR/A"],
+                    amendments=True,
+                )
+            except too_many_requests_error as exc:
+                raise EdgarRateLimitError(
+                    "SEC rate limit reached while loading the 13F filing index; wait before retrying."
+                ) from exc
+            if filings is not None:
+                for filing in filings:
+                    filing_date = self._filing_date(filing)
+                    if filing_date is None or not start_date <= filing_date <= end_date:
+                        continue
+                    accession = self._accession_number(filing)
+                    if accession:
+                        filings_by_accession[accession] = filing
+            quarter_start = self._next_quarter_start(quarter_start)
+
+        return sorted(
+            filings_by_accession.values(),
+            key=lambda filing: (self._filing_date(filing) or date.min, self._accession_number(filing)),
+        )
+
+    def build_13f_payload(
+        self,
+        filing: object,
+        user_agent: str | None = None,
+    ) -> dict[str, object]:
+        if user_agent:
+            report_date, content = self._fetch_submission_information_table(filing, user_agent)
+        else:
+            report_date = self.period_of_report(filing)
+            information_table = self._information_table_attachment(filing)
+            content = getattr(information_table, "content", "")
+        return self._build_13f_payload_from_content(filing, report_date, content)
+
+    def _build_13f_payload_from_content(
+        self,
+        filing: object,
+        report_date: str,
+        content: object,
+    ) -> dict[str, object]:
+        if not report_date:
+            raise Edgar13FParseError(
+                f"13F filing {self._accession_number(filing)} has no period of report."
+            )
+        if isinstance(content, bytes):
+            content = content.decode("utf-8", errors="replace")
+        content_text = str(content).lstrip()
+        if not content_text:
+            raise Edgar13FParseError(
+                f"13F filing {self._accession_number(filing)} has an empty information table."
+            )
+        try:
+            root = ET.fromstring(content_text)
+        except ET.ParseError as exc:
+            raise Edgar13FParseError(
+                f"13F filing {self._accession_number(filing)} information table is not valid XML."
+            ) from exc
+
+        holdings_by_key: dict[str, dict[str, object]] = {}
+        for info_table in root.findall(".//{*}infoTable"):
+            cusip = self._xml_child_text(info_table, "cusip").upper()
+            title_of_class = self._xml_child_text(info_table, "titleOfClass")
+            put_call = self._xml_child_text(info_table, "putCall").upper()
+            security_key = f"{cusip}|{put_call or 'COMMON'}|{title_of_class}".upper()
+            holding = {
+                "name_of_issuer": self._xml_child_text(info_table, "nameOfIssuer"),
+                "title_of_class": title_of_class,
+                "cusip": cusip,
+                "put_call": put_call,
+                "value_usd": self._parse_int(self._xml_child_text(info_table, "value")),
+                "shares_or_principal": self._parse_int(
+                    self._xml_nested_text(info_table, "shrsOrPrnAmt", "sshPrnamt")
+                ),
+                "amount_type": self._xml_nested_text(info_table, "shrsOrPrnAmt", "sshPrnamtType"),
+                "investment_discretion": self._xml_child_text(info_table, "investmentDiscretion"),
+            }
+            existing = holdings_by_key.get(security_key)
+            if existing is None:
+                holdings_by_key[security_key] = holding
+            else:
+                existing["value_usd"] = int(existing["value_usd"]) + int(holding["value_usd"])
+                existing["shares_or_principal"] = int(existing["shares_or_principal"]) + int(
+                    holding["shares_or_principal"]
+                )
+
+        if not holdings_by_key:
+            raise Edgar13FParseError(
+                f"13F filing {self._accession_number(filing)} has no information-table holdings."
+            )
+        filing_date = self._filing_date(filing)
+        return {
+            "accession_number": self._accession_number(filing),
+            "manager_cik": int(getattr(filing, "cik", 0) or 0),
+            "manager_name": _normalize_text(getattr(filing, "company", "") or getattr(filing, "company_name", "")),
+            "form": _normalize_text(getattr(filing, "form", "")),
+            "filing_date": filing_date.isoformat() if filing_date else "",
+            "report_date": report_date,
+            "filing_url": _normalize_text(getattr(filing, "homepage_url", "")),
+            "payload": {
+                "report_date": report_date,
+                "holdings": list(holdings_by_key.values()),
+            },
+        }
+
+    def _fetch_submission_information_table(
+        self,
+        filing: object,
+        user_agent: str,
+    ) -> tuple[str, str]:
+        submission_url = str(getattr(filing, "text_url", "") or "").strip()
+        if not submission_url:
+            cik = int(getattr(filing, "cik", 0) or 0)
+            accession = self._accession_number(filing).replace("-", "")
+            submission_url = f"https://www.sec.gov/Archives/edgar/data/{cik}/{accession}/{self._accession_number(filing)}.txt"
+        try:
+            self._wait_for_sec_request()
+            request = Request(submission_url, headers={"User-Agent": user_agent})
+            with urlopen(request, timeout=30) as response:
+                submission_text = response.read().decode("utf-8", errors="replace")
+        except HTTPError as exc:
+            if exc.code == 429:
+                raise EdgarRateLimitError(
+                    "SEC rate limit reached while loading a 13F submission; wait before retrying."
+                ) from exc
+            raise Edgar13FParseError(
+                f"Unable to download 13F submission {self._accession_number(filing)} (HTTP {exc.code})."
+            ) from exc
+        except (URLError, TimeoutError) as exc:
+            raise Edgar13FParseError(
+                f"Unable to download 13F submission {self._accession_number(filing)}."
+            ) from exc
+
+        period_match = re.search(
+            r"CONFORMED PERIOD OF REPORT:\s*(\d{8})",
+            submission_text,
+            flags=re.IGNORECASE,
+        )
+        if period_match is None:
+            raise Edgar13FParseError(
+                f"13F submission {self._accession_number(filing)} has no conformed report period."
+            )
+        raw_period = period_match.group(1)
+        report_date = f"{raw_period[:4]}-{raw_period[4:6]}-{raw_period[6:8]}"
+        for document in re.findall(r"<DOCUMENT>(.*?)</DOCUMENT>", submission_text, flags=re.IGNORECASE | re.DOTALL):
+            document_type = re.search(r"<TYPE>\s*([^\r\n<]+)", document, flags=re.IGNORECASE)
+            document_text = re.search(r"<TEXT>(.*?)</TEXT>", document, flags=re.IGNORECASE | re.DOTALL)
+            if document_type is None or document_text is None:
+                continue
+            if "INFORMATION TABLE" in document_type.group(1).upper():
+                return report_date, document_text.group(1).strip()
+        raise Edgar13FParseError(
+            f"13F submission {self._accession_number(filing)} has no information-table document."
+        )
+
+    def _wait_for_sec_request(self) -> None:
+        raw_rate = os.environ.get("EDGAR_RATE_LIMIT_PER_SEC", "2")
+        try:
+            requests_per_second = max(float(raw_rate), 0.1)
+        except ValueError:
+            requests_per_second = 2.0
+        minimum_interval = 1.0 / requests_per_second
+        if self._last_sec_request_at is not None:
+            elapsed = time.monotonic() - self._last_sec_request_at
+            if elapsed < minimum_interval:
+                time.sleep(minimum_interval - elapsed)
+        self._last_sec_request_at = time.monotonic()
+
+    @staticmethod
+    def _next_quarter_start(value: date) -> date:
+        if value.month == 10:
+            return date(value.year + 1, 1, 1)
+        return date(value.year, value.month + 3, 1)
+
+    @staticmethod
+    def _filing_date(filing: object) -> date | None:
+        value = getattr(filing, "filing_date", None)
+        if isinstance(value, date):
+            return value
+        text = str(value or "").strip()
+        return date.fromisoformat(text) if text else None
+
+    @staticmethod
+    def _accession_number(filing: object) -> str:
+        return str(getattr(filing, "accession_number", None) or getattr(filing, "accession_no", "") or "").strip()
+
+    @classmethod
+    def period_of_report(cls, filing: object) -> str:
+        header = getattr(filing, "header", None)
+        return cls._normalize_date(getattr(header, "period_of_report", ""))
+
+    @staticmethod
+    def _normalize_date(value: object) -> str:
+        if isinstance(value, date):
+            return value.isoformat()
+        text = str(value or "").strip()
+        return text[:10] if len(text) >= 10 and text[4] == "-" else text
+
+    @staticmethod
+    def _information_table_attachment(filing: object) -> object:
+        attachments = getattr(filing, "attachments", None)
+        if attachments is None:
+            raise Edgar13FParseError("13F filing has no attachments.")
+        for attachment in list(attachments):
+            document_type = _normalize_text(getattr(attachment, "document_type", "")).upper()
+            document_name = _normalize_text(getattr(attachment, "document", "")).lower()
+            if document_type == "INFORMATION TABLE" or "infotable" in document_name or "information" in document_name:
+                return attachment
+        raise Edgar13FParseError("13F filing has no information-table attachment.")
+
+    @staticmethod
+    def _xml_child_text(element: ET.Element, child_name: str) -> str:
+        for child in list(element):
+            if child.tag.split("}")[-1] == child_name:
+                return (child.text or "").strip()
+        return ""
+
+    @classmethod
+    def _xml_nested_text(cls, element: ET.Element, parent_name: str, child_name: str) -> str:
+        for child in list(element):
+            if child.tag.split("}")[-1] == parent_name:
+                return cls._xml_child_text(child, child_name)
+        return ""
+
+    @staticmethod
+    def _parse_int(value: str) -> int:
+        cleaned = value.replace(",", "").strip()
+        if not cleaned:
+            return 0
+        return int(float(cleaned))
 
     def build_8k_payload(self, filing: object, ticker: str) -> dict[str, object]:
         report = filing.obj()

@@ -11,6 +11,7 @@ def apply_edgar_environment(settings: Settings) -> None:
     os.environ["EDGAR_ACCESS_MODE"] = settings.edgar_access_mode
     os.environ["EDGAR_USE_LOCAL_DATA"] = "True" if settings.edgar_use_local_data else "False"
     os.environ["EDGAR_LOCAL_DATA_DIR"] = str(settings.edgar_local_data_dir)
+    os.environ.setdefault("EDGAR_RATE_LIMIT_PER_SEC", "2")
     if util.find_spec("edgar") is None:
         return
     edgar_module = importlib.import_module("edgar")

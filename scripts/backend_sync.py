@@ -57,8 +57,16 @@ def build_parser() -> argparse.ArgumentParser:
     sync_13f = subparsers.add_parser("sync-13f", help="Sync quarterly structured 13F data.")
     _add_common_args(sync_13f)
     sync_13f.add_argument("--mode", default="incremental")
+    sync_13f.add_argument(
+        "--source",
+        choices=["structured", "filings"],
+        default="structured",
+        help="Use SEC structured ZIPs or incremental all-filer EDGAR submissions.",
+    )
     sync_13f.add_argument("--quarters", type=int, default=4)
     sync_13f.add_argument("--latest-report-date")
+    sync_13f.add_argument("--filing-date-from")
+    sync_13f.add_argument("--filing-date-to")
     sync_13f.add_argument("--top-limit", type=int, default=100)
     sync_13f.add_argument("--skip-download", action="store_true")
     sync_13f.add_argument("--enrich-openfigi", action="store_true")
@@ -167,8 +175,11 @@ def main() -> int:
                 log_level=args.log_level,
                 job_id=args.job_id,
                 mode=args.mode,
+                source=args.source,
                 quarters=args.quarters,
                 latest_report_date=args.latest_report_date,
+                filing_date_from=args.filing_date_from,
+                filing_date_to=args.filing_date_to,
                 top_limit=args.top_limit,
                 skip_download=args.skip_download,
                 enrich_openfigi=args.enrich_openfigi,

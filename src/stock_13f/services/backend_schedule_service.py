@@ -22,6 +22,7 @@ from stock_13f.domain.sync_requests import Sync13DGRequest
 from stock_13f.domain.sync_requests import Sync13FRequest
 from stock_13f.domain.sync_requests import Sync8KRequest
 from stock_13f.domain.sync_requests import SyncAllRequest
+from stock_13f.domain.sync_requests import latest_completed_quarter_end
 from stock_13f.services.backend_orchestrator import BACKEND_RECOVERABLE_ERRORS
 from stock_13f.services.backend_orchestrator import BackendOrchestrator
 
@@ -301,7 +302,7 @@ class BackendScheduleService:
 
     def _execute_job(self, job: ScheduledJobConfig, current_time: datetime) -> None:
         try:
-            result = self._run_backend_command(job)
+            result = self._run_backend_command(job, current_time)
         except BACKEND_RECOVERABLE_ERRORS as exc:
             LOGGER.exception(
                 "scheduled_backend_job_exception",
@@ -327,8 +328,8 @@ class BackendScheduleService:
             return
         LOGGER.error("scheduled_backend_job_failed", extra=payload)
 
-    def _run_backend_command(self, job: ScheduledJobConfig):
-        request = self._build_request(job.command, job.request)
+    def _run_backend_command(self, job: ScheduledJobConfig, current_time: datetime):
+        request = self._build_request(job.command, job.request, current_time.date())
         if job.command == "sync-13f":
             return self._orchestrator.sync_13f(request)
         if job.command == "sync-8k":
@@ -341,15 +342,25 @@ class BackendScheduleService:
             return self._orchestrator.rebuild_marts(request)
         return self._orchestrator.sync_all(request)
 
-    def _build_request(self, command: str, request_payload: dict[str, object]):
+    def _build_request(
+        self,
+        command: str,
+        request_payload: dict[str, object],
+        current_date: date | None = None,
+    ):
         if command == "sync-13f":
+            source = str(request_payload.get("source", "filings")).strip().lower()
+            latest_report_date = _optional_string(request_payload.get("latest_report_date"))
+            if source == "filings" and latest_report_date is None:
+                latest_report_date = latest_completed_quarter_end(current_date)
             return Sync13FRequest(
                 dry_run=self._dry_run,
                 log_level=self._log_level,
                 job_id=str(request_payload.get("job_id", "")).strip() or None,
                 mode=str(request_payload.get("mode", "incremental")),
+                source=source,
                 quarters=int(request_payload.get("quarters", 4)),
-                latest_report_date=_optional_string(request_payload.get("latest_report_date")),
+                latest_report_date=latest_report_date,
                 top_limit=int(request_payload.get("top_limit", 100)),
                 skip_download=bool(request_payload.get("skip_download", False)),
                 enrich_openfigi=bool(request_payload.get("enrich_openfigi", False)),

@@ -12,6 +12,18 @@
 - 修正 13F 导出与后台同步的 `--skip-download` 语义：cache-only 模式现在只读取本地 ZIP，缺失时明确失败，不再意外触发下载；后续拿到更新后的可解析 ZIP 后，可按 `report_date` 重跑并替换该季度 movers 快照。
 - 当前仍不支持从单条 13F filing/raw holdings 增量拼接 Quarterly movers；需要 SEC structured ZIP 或现有格式的完整/更新快照。
 
+## 2026-08-09
+
+- 确认 SEC 已有全市场 Q2 13F-HR/13F-HR/A filing；项目追踪的基金之外，新增全市场 filing 增量模式，使用 edgartools filing index/header 发现申报，按 accession 去重并解析 information-table XML。
+- 新增 `sql/0005_13f_incremental_filings.sql` 与 `raw_13f_filings` Supabase 表设计；Q2 partial movers 只比较已提交基金，避免把尚未申报的基金误判为退出。
+- 新增 `sync-13f --source filings --latest-report-date 2026-06-30` 入口；远端 migration 尚未执行前不会启动真实写入。
+- 增加部分季度回归测试，确认未提交基金不会在增量 movers 中被误判为退出，并覆盖 `sync-13f` 的 filing 来源与日期参数。
+- 将定时任务 `sync_13f_baseline`、`sync_13f_peak_window` 从 structured ZIP 流程切换为全市场 EDGAR filing 增量流程；调度器自动计算最近已结束季度，`structured` 仅作为显式手动兼容来源保留。
+- 将 `sync-all` 未显式指定 13F 请求时的默认来源同步切换为 filing 增量流程，避免其他调度入口回退到 ZIP。
+- 真实 Q2 同步首次尝试遭遇 SEC HTTP 429；增加 SEC 429 可恢复错误处理，并将 edgartools 默认请求速率降至每秒 2 次，等待 SEC 冷却后可安全重跑且不会产生半成品入库。
+- 为逐条 13F information-table 正文请求增加同一速率限制，避免 filing index 获取成功后正文抓取再次超过 SEC 限额。
+- 修复正文请求 HTTP 429 被误计为解析失败的问题；全市场 filing 解析每 100 条增量写入 `raw_13f_filings`，中断后重跑会跳过已入库 accession。
+
 ## 2026-07-21
 
 - 排查 `python scripts/backend_sync.py sync-all --with-marts` 长时间运行后的异常退出：补充轮转文件日志、未捕获异常 traceback 记录，并让 `sync-all`/scheduler 在可恢复的网络、数据库和数据解析异常下记录失败结果后继续后续任务；新增对应回归测试。

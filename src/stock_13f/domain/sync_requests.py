@@ -1,7 +1,22 @@
 """Request dataclasses for backend sync services."""
 
 from dataclasses import dataclass
+from datetime import date
+import calendar
 from pathlib import Path
+
+
+def latest_completed_quarter_end(current_date: date | None = None) -> str:
+    """Return the report date for the most recently completed calendar quarter."""
+    value = current_date or date.today()
+    current_quarter_start_month = ((value.month - 1) // 3) * 3 + 1
+    previous_quarter_end_month = current_quarter_start_month - 1
+    year = value.year
+    if previous_quarter_end_month == 0:
+        year -= 1
+        previous_quarter_end_month = 12
+    last_day = calendar.monthrange(year, previous_quarter_end_month)[1]
+    return date(year, previous_quarter_end_month, last_day).isoformat()
 
 
 @dataclass(frozen=True)
@@ -14,8 +29,11 @@ class BaseSyncRequest:
 @dataclass(frozen=True)
 class Sync13FRequest(BaseSyncRequest):
     mode: str = "incremental"
+    source: str = "structured"
     quarters: int = 4
     latest_report_date: str | None = None
+    filing_date_from: str | None = None
+    filing_date_to: str | None = None
     top_limit: int = 100
     skip_download: bool = False
     enrich_openfigi: bool = False

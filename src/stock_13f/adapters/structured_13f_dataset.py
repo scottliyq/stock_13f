@@ -81,6 +81,9 @@ class Structured13FDatasetAdapter:
     def recent_report_dates(self, latest_report_date: str, quarter_count: int) -> list[str]:
         return self._module.recent_report_dates(latest_report_date, quarter_count)
 
+    def previous_report_date(self, report_date: str) -> str:
+        return self._module.previous_quarter_end(date.fromisoformat(report_date)).isoformat()
+
     def build_manager_rebalance_snapshot(
         self,
         dataset_cache_dir: Path,
@@ -336,6 +339,100 @@ class Structured13FDatasetAdapter:
             manager_security_latest_rows=manager_security_latest_rows,
         )
 
+    def build_quarterly_mover_rows_from_raw_filings(
+        self,
+        raw_filing_rows: list[dict[str, object]],
+        previous_quarter_data: object,
+        report_date: str,
+        top_limit: int,
+        manager_ciks: set[str] | None = None,
+    ) -> QuarterlyMoverBuildResult:
+        latest_by_cik: dict[str, dict[str, object]] = {}
+        for row in raw_filing_rows:
+            manager_cik = str(row.get("manager_cik", "") or "").strip()
+            if not manager_cik or str(row.get("report_date", "") or "") != report_date:
+                continue
+            existing = latest_by_cik.get(manager_cik)
+            if existing is None or self._raw_filing_sort_key(row) > self._raw_filing_sort_key(existing):
+                latest_by_cik[manager_cik] = row
+        if not latest_by_cik:
+            raise ValueError(f"No raw 13F filings are available for report date {report_date}.")
+
+        manager_names_by_cik: dict[str, str] = {}
+        holdings_by_cik: dict[str, dict[str, object]] = {}
+        for manager_cik, row in latest_by_cik.items():
+            manager_names_by_cik[manager_cik] = str(row.get("manager_name", "") or "").strip()
+            payload = row.get("payload", {})
+            holdings = payload.get("holdings", []) if isinstance(payload, dict) else []
+            manager_holdings: dict[str, object] = {}
+            for holding in holdings:
+                if not isinstance(holding, dict):
+                    continue
+                cusip = str(holding.get("cusip", "") or "").strip().upper()
+                title_of_class = str(holding.get("title_of_class", "") or "").strip()
+                put_call = str(holding.get("put_call", "") or "").strip().upper()
+                security_key = self._module.holding_security_key(cusip, put_call, title_of_class)
+                manager_holdings[security_key] = self._module.ManagerHolding(
+                    name_of_issuer=str(holding.get("name_of_issuer", "") or "").strip(),
+                    title_of_class=title_of_class,
+                    cusip=cusip,
+                    put_call=put_call,
+                    value_usd=int(holding.get("value_usd", 0) or 0),
+                )
+            holdings_by_cik[manager_cik] = manager_holdings
+
+        current_quarter_data = self._module.QuarterData(
+            report_date=report_date,
+            manager_names_by_cik=manager_names_by_cik,
+            holdings_by_cik=holdings_by_cik,
+        )
+        summaries = self._module.summarize_quarter(
+            current_data=current_quarter_data,
+            previous_data=previous_quarter_data,
+            include_previous_only=False,
+        )
+        rows: list[dict[str, object]] = []
+        for security_type in self._module.SECURITY_TYPES:
+            rows.extend(
+                self._module.build_csv_rows(
+                    report_date=report_date,
+                    summaries=summaries,
+                    security_type=security_type,
+                    top_limit=top_limit,
+                )
+            )
+        summary_rows, detail_rows = self._build_manager_rebalance_dataset(
+            report_date=report_date,
+            current_quarter_data=current_quarter_data,
+            previous_quarter_data=previous_quarter_data,
+            manager_ciks=manager_ciks,
+            include_previous_only=False,
+        )
+        security_latest_rows = self._build_manager_security_latest_dataset(
+            report_date=report_date,
+            current_quarter_data=current_quarter_data,
+            previous_quarter_data=previous_quarter_data,
+            manager_ciks=manager_ciks,
+            include_previous_only=False,
+        )
+        return QuarterlyMoverBuildResult(
+            latest_report_date=report_date,
+            report_dates=[report_date],
+            rows=rows,
+            manager_rebalance_summary_rows=summary_rows,
+            manager_rebalance_detail_rows=detail_rows,
+            manager_security_latest_rows=security_latest_rows,
+        )
+
+    def load_quarter_data_from_cache(self, dataset_cache_dir: Path, report_date: str) -> object:
+        zip_path = self._module.dataset_zip_path(dataset_cache_dir, report_date)
+        if not zip_path.exists():
+            raise FileNotFoundError(
+                f"Local 13F dataset is missing for {report_date}; "
+                "the previous quarter is required to calculate movers."
+            )
+        return self._load_quarter_data_cached(zip_path, report_date)
+
     def export(
         self,
         dataset_cache_dir: Path,
@@ -420,6 +517,15 @@ class Structured13FDatasetAdapter:
             load_map.cache_clear()
         return len(new_rows)
 
+    @staticmethod
+    def _raw_filing_sort_key(row: dict[str, object]) -> tuple[str, int, str]:
+        form = str(row.get("form", "") or "").strip().upper()
+        return (
+            str(row.get("filing_date", "") or ""),
+            1 if form == "13F-HR/A" else 0,
+            str(row.get("accession_number", "") or ""),
+        )
+
     def _build_manager_rebalance_rows(
         self,
         current_holdings: dict[str, object],
@@ -473,6 +579,7 @@ class Structured13FDatasetAdapter:
         current_quarter_data: object,
         previous_quarter_data: object,
         manager_ciks: set[str] | None = None,
+        include_previous_only: bool = True,
     ) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
         current_holdings_by_cik = self._normalize_holdings_map(current_quarter_data.holdings_by_cik)
         previous_holdings_by_cik = self._normalize_holdings_map(previous_quarter_data.holdings_by_cik)
@@ -480,7 +587,10 @@ class Structured13FDatasetAdapter:
         previous_names_by_cik = self._normalize_name_map(previous_quarter_data.manager_names_by_cik)
         summary_rows: list[dict[str, object]] = []
         detail_rows: list[dict[str, object]] = []
-        for manager_cik in sorted(set(current_holdings_by_cik) | set(previous_holdings_by_cik)):
+        manager_keys = set(current_holdings_by_cik)
+        if include_previous_only:
+            manager_keys |= set(previous_holdings_by_cik)
+        for manager_cik in sorted(manager_keys):
             if manager_ciks is not None and manager_cik not in manager_ciks:
                 continue
             current_holdings = current_holdings_by_cik.get(manager_cik, {})
@@ -533,13 +643,17 @@ class Structured13FDatasetAdapter:
         current_quarter_data: object,
         previous_quarter_data: object,
         manager_ciks: set[str] | None = None,
+        include_previous_only: bool = True,
     ) -> list[dict[str, object]]:
         current_holdings_by_cik = self._normalize_holdings_map(current_quarter_data.holdings_by_cik)
         previous_holdings_by_cik = self._normalize_holdings_map(previous_quarter_data.holdings_by_cik)
         current_names_by_cik = self._normalize_name_map(current_quarter_data.manager_names_by_cik)
         previous_names_by_cik = self._normalize_name_map(previous_quarter_data.manager_names_by_cik)
         rows: list[dict[str, object]] = []
-        for manager_cik in sorted(set(current_holdings_by_cik) | set(previous_holdings_by_cik)):
+        manager_keys = set(current_holdings_by_cik)
+        if include_previous_only:
+            manager_keys |= set(previous_holdings_by_cik)
+        for manager_cik in sorted(manager_keys):
             if manager_ciks is not None and manager_cik not in manager_ciks:
                 continue
             current_holdings = current_holdings_by_cik.get(manager_cik, {})

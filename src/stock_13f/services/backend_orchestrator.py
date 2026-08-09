@@ -18,6 +18,7 @@ from stock_13f.domain.sync_requests import Sync13DGRequest
 from stock_13f.domain.sync_requests import Sync13FRequest
 from stock_13f.domain.sync_requests import Sync8KRequest
 from stock_13f.domain.sync_requests import SyncAllRequest
+from stock_13f.domain.sync_requests import latest_completed_quarter_end
 from stock_13f.domain.sync_results import SyncResult
 from stock_13f.repositories.checkpoints import CheckpointRepository
 from stock_13f.services.eightk_sync_service import EightKSyncService
@@ -105,7 +106,16 @@ class BackendOrchestrator:
         checkpoints_updated = 0
         details: dict[str, object] = {"steps": []}
         step_requests = [
-            ("sync-13f", request.sync_13f_request or Sync13FRequest(dry_run=request.dry_run, log_level=request.log_level)),
+            (
+                "sync-13f",
+                request.sync_13f_request
+                or Sync13FRequest(
+                    dry_run=request.dry_run,
+                    log_level=request.log_level,
+                    source="filings",
+                    latest_report_date=latest_completed_quarter_end(),
+                ),
+            ),
             ("sync-8k", request.sync_8k_request or Sync8KRequest(dry_run=request.dry_run, log_level=request.log_level)),
             ("sync-13dg", request.sync_13dg_request or Sync13DGRequest(dry_run=request.dry_run, log_level=request.log_level)),
         ]

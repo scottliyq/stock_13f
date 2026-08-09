@@ -29,10 +29,21 @@ def test_build_parser_supports_required_subcommands() -> None:
     assert "backfill-tickers" in help_text
     assert "sync-all" in help_text
     assert "show-status" in help_text
+    assert "--source" in subparsers_action.choices["sync-13f"].format_help()
+    assert "--filing-date-from" in subparsers_action.choices["sync-13f"].format_help()
     assert "--form-scope" in subparsers_action.choices["sync-13dg"].format_help()
     assert "--manager-ciks" in subparsers_action.choices["sync-13dg"].format_help()
     assert "--manager-scope" in subparsers_action.choices["audit-13dg-coverage"].format_help()
     assert "--with-openfigi" in subparsers_action.choices["backfill-tickers"].format_help()
+
+
+def test_sync_13f_cli_keeps_structured_source_as_explicit_compatibility_option() -> None:
+    parser = backend_sync.build_parser()
+
+    args = parser.parse_args(["sync-13f", "--source", "structured", "--skip-download"])
+
+    assert args.source == "structured"
+    assert args.skip_download is True
 
 
 def test_split_tickers_normalizes_values() -> None:

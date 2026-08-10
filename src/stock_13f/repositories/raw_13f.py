@@ -44,6 +44,7 @@ class Raw13FRepository:
         self,
         report_date: str,
         page_size: int = 1000,
+        select: str = "*",
     ) -> list[dict[str, object]]:
         if self._supabase_client is None:
             return []
@@ -56,7 +57,7 @@ class Raw13FRepository:
                 offset=offset,
                 filters={"report_date": f"eq.{report_date}"},
                 order="manager_cik.asc,filing_date.desc,accession_number.desc",
-                select="accession_number",
+                select=select,
             )
             if not page:
                 break
@@ -73,7 +74,11 @@ class Raw13FRepository:
     ) -> set[str]:
         return {
             str(row.get("accession_number", "") or "").strip()
-            for row in self.fetch_filing_rows(report_date, page_size=page_size)
+            for row in self.fetch_filing_rows(
+                report_date,
+                page_size=page_size,
+                select="accession_number",
+            )
             if str(row.get("accession_number", "") or "").strip()
         }
 

@@ -2,6 +2,7 @@
 
 from datetime import date
 from datetime import timedelta
+from http.client import RemoteDisconnected
 import importlib
 from importlib import util
 import os
@@ -253,23 +254,7 @@ class EdgarToolsClient:
             cik = int(getattr(filing, "cik", 0) or 0)
             accession = self._accession_number(filing).replace("-", "")
             submission_url = f"https://www.sec.gov/Archives/edgar/data/{cik}/{accession}/{self._accession_number(filing)}.txt"
-        try:
-            self._wait_for_sec_request()
-            request = Request(submission_url, headers={"User-Agent": user_agent})
-            with urlopen(request, timeout=30) as response:
-                submission_text = response.read().decode("utf-8", errors="replace")
-        except HTTPError as exc:
-            if exc.code == 429:
-                raise EdgarRateLimitError(
-                    "SEC rate limit reached while loading a 13F submission; wait before retrying."
-                ) from exc
-            raise Edgar13FParseError(
-                f"Unable to download 13F submission {self._accession_number(filing)} (HTTP {exc.code})."
-            ) from exc
-        except (URLError, TimeoutError) as exc:
-            raise Edgar13FParseError(
-                f"Unable to download 13F submission {self._accession_number(filing)}."
-            ) from exc
+        submission_text = self._download_sec_text(submission_url, user_agent, filing)
 
         period_match = re.search(
             r"CONFORMED PERIOD OF REPORT:\s*(\d{8})",
@@ -282,16 +267,55 @@ class EdgarToolsClient:
             )
         raw_period = period_match.group(1)
         report_date = f"{raw_period[:4]}-{raw_period[4:6]}-{raw_period[6:8]}"
+        information_documents: list[tuple[str, str]] = []
         for document in re.findall(r"<DOCUMENT>(.*?)</DOCUMENT>", submission_text, flags=re.IGNORECASE | re.DOTALL):
             document_type = re.search(r"<TYPE>\s*([^\r\n<]+)", document, flags=re.IGNORECASE)
+            filename_match = re.search(r"<FILENAME>\s*([^\r\n<]+)", document, flags=re.IGNORECASE)
             document_text = re.search(r"<TEXT>(.*?)</TEXT>", document, flags=re.IGNORECASE | re.DOTALL)
             if document_type is None or document_text is None:
                 continue
-            if "INFORMATION TABLE" in document_type.group(1).upper():
-                return report_date, document_text.group(1).strip()
+            filename = filename_match.group(1).strip() if filename_match is not None else ""
+            if "INFORMATION TABLE" in document_type.group(1).upper() or "INFOTABLE" in filename.upper():
+                information_documents.append((filename, document_text.group(1).strip()))
+
+        for filename, document_content in information_documents:
+            if filename.lower().endswith(".xml") or "<infotable" in document_content.lower():
+                try:
+                    ET.fromstring(document_content.lstrip())
+                except ET.ParseError:
+                    continue
+                return report_date, document_content
+
+        xml_filename = next(
+            (filename for filename, _ in information_documents if filename.lower().endswith(".xml")),
+            "",
+        )
+        if xml_filename:
+            archive_url = submission_url.rsplit("/", maxsplit=1)[0]
+            xml_url = f"{archive_url}/{xml_filename.rsplit('/', maxsplit=1)[-1]}"
+            return report_date, self._download_sec_text(xml_url, user_agent, filing)
         raise Edgar13FParseError(
             f"13F submission {self._accession_number(filing)} has no information-table document."
         )
+
+    def _download_sec_text(self, url: str, user_agent: str, filing: object) -> str:
+        try:
+            self._wait_for_sec_request()
+            request = Request(url, headers={"User-Agent": user_agent})
+            with urlopen(request, timeout=30) as response:
+                return response.read().decode("utf-8", errors="replace")
+        except HTTPError as exc:
+            if exc.code in {403, 429, 503}:
+                raise EdgarRateLimitError(
+                    f"SEC temporarily rejected a 13F submission request (HTTP {exc.code}); wait before retrying."
+                ) from exc
+            raise Edgar13FParseError(
+                f"Unable to download 13F submission {self._accession_number(filing)} (HTTP {exc.code})."
+            ) from exc
+        except (RemoteDisconnected, URLError, TimeoutError, ConnectionResetError) as exc:
+            raise Edgar13FParseError(
+                f"Unable to download 13F submission {self._accession_number(filing)}."
+            ) from exc
 
     def _wait_for_sec_request(self) -> None:
         raw_rate = os.environ.get("EDGAR_RATE_LIMIT_PER_SEC", "2")

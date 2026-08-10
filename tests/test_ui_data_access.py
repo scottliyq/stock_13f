@@ -21,6 +21,7 @@ from stock_13f.ui.data_access import load_recent_8k
 from stock_13f.ui.data_access import load_recent_13dg_by_manager
 from stock_13f.ui.data_access import load_recent_13dg_for_tickers
 from stock_13f.ui.data_access import load_manager_rebalance_snapshot
+from stock_13f.ui.data_access import load_report_periods
 from stock_13f.ui.data_access import summarize_13dg_row
 from stock_13f.ui.data_access import summarize_8k_row
 
@@ -28,6 +29,34 @@ from stock_13f.ui.data_access import summarize_8k_row
 def test_split_focus_terms_handles_chinese_and_slash_delimiters() -> None:
     terms = split_focus_terms("AI 基建、半导体、数据中心、电力链 / Apple/NVDA/TSLA")
     assert terms == ["AI", "基建", "半导体", "数据中心", "电力链", "Apple", "NVDA", "TSLA"]
+
+
+def test_load_report_periods_keeps_history_when_latest_run_only_has_new_period(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class FakeClient:
+        def fetch_rows(
+            self,
+            table_name: str,
+            limit: int = 10,
+            offset: int = 0,
+            filters: dict[str, str] | None = None,
+            order: str | None = None,
+        ) -> list[dict[str, object]]:
+            del limit, offset, filters, order
+            if table_name == "raw_13f_sync_runs":
+                return [{"payload": {"report_dates": ["2026-06-30"]}}]
+            if table_name == "mart_13f_quarterly_movers":
+                return [
+                    {"report_date": "2026-06-30"},
+                    {"report_date": "2026-03-31"},
+                ]
+            raise AssertionError(table_name)
+
+    load_report_periods.clear()
+    monkeypatch.setattr(data_access, "get_supabase_client", lambda: FakeClient())
+
+    assert load_report_periods() == ["2026-06-30", "2026-03-31"]
 
 
 def test_summarize_8k_row_prefers_structured_payload() -> None:

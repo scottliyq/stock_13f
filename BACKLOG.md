@@ -23,6 +23,14 @@
 - 真实 Q2 同步首次尝试遭遇 SEC HTTP 429；增加 SEC 429 可恢复错误处理，并将 edgartools 默认请求速率降至每秒 2 次，等待 SEC 冷却后可安全重跑且不会产生半成品入库。
 - 为逐条 13F information-table 正文请求增加同一速率限制，避免 filing index 获取成功后正文抓取再次超过 SEC 限额。
 - 修复正文请求 HTTP 429 被误计为解析失败的问题；全市场 filing 解析每 100 条增量写入 `raw_13f_filings`，中断后重跑会跳过已入库 accession。
+- 将 SEC 正文请求的 403/429/503 统一识别为临时拒绝并立即停止，避免持续请求延长封禁；解析失败日志补充 accession 和错误信息。
+- 修复 13F submission 同时包含 HTML/XML information table 时误取 HTML 的问题，优先解析 XML，必要时按 filing 目录补取 XML 文档。
+- 捕获 SEC Archive `RemoteDisconnected`/连接重置，使单条网络断连跳过并继续完成 Q2 扫描，不再阻断最终 mart 重建。
+- 修复 raw filing 查询默认只返回 `accession_number`、导致 movers 构建拿不到 `payload` 的问题；完整 raw 行现在用于 Q2 movers 重建，accession 去重仍使用窄字段查询。
+
+## 2026-08-10
+
+- 修复 Streamlit `Report period` 下拉框只显示最新同步季度的问题：最新 `raw_13f_sync_runs` 的 `report_dates` 现在与 `mart_13f_quarterly_movers` 中已有历史报告期取并集，更新 Q2 不再隐藏 Q1/Q2 选择。
 
 ## 2026-07-21
 

@@ -352,8 +352,9 @@ class ThirteenFSyncService:
             except Edgar13FParseError as exc:
                 parse_failures += 1
                 LOGGER.warning(
-                    "sync_13f_filing_parse_failed",
-                    extra={"accession_number": accession, "error": str(exc)},
+                    "sync_13f_filing_parse_failed accession=%s error=%s",
+                    accession,
+                    str(exc),
                 )
         new_filing_count += self._raw_repository.upsert_filing_rows(new_rows)
         raw_rows = self._raw_repository.fetch_filing_rows(report_date)

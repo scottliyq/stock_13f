@@ -136,6 +136,12 @@ def test_build_13f_payload_from_submission_text_uses_conformed_period(monkeypatc
 CONFORMED PERIOD OF REPORT: 20260630
 <DOCUMENT>
 <TYPE>INFORMATION TABLE
+<FILENAME>infotable.html
+<TEXT><html><body>human-readable table</body></html></TEXT>
+</DOCUMENT>
+<DOCUMENT>
+<TYPE>INFORMATION TABLE
+<FILENAME>infotable.xml
 <TEXT>
 {xml}
 </TEXT>

@@ -324,6 +324,7 @@ def load_report_periods() -> list[str]:
     client = get_supabase_client()
     if client is None:
         return []
+    periods: set[str] = set()
     try:
         latest_runs = client.fetch_rows("raw_13f_sync_runs", limit=1, order="synced_at.desc")
     except SupabaseError:
@@ -333,12 +334,14 @@ def load_report_periods() -> list[str]:
         if isinstance(payload, dict):
             report_dates = payload.get("report_dates", [])
             if isinstance(report_dates, list):
-                values = [str(item) for item in report_dates if str(item).strip()]
-                if values:
-                    return values
+                periods.update(str(item).strip() for item in report_dates if str(item).strip())
     mover_rows = _fetch_all_rows("mart_13f_quarterly_movers", order="report_date.desc")
-    periods = sorted({str(row.get("report_date", "")) for row in mover_rows if row.get("report_date")}, reverse=True)
-    return periods
+    periods.update(
+        str(row.get("report_date", "")).strip()
+        for row in mover_rows
+        if str(row.get("report_date", "")).strip()
+    )
+    return sorted(periods, reverse=True)
 
 
 @st.cache_data(ttl=300, show_spinner=False)

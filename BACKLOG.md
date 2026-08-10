@@ -31,6 +31,7 @@
 ## 2026-08-10
 
 - 修复 Streamlit `Report period` 下拉框只显示最新同步季度的问题：最新 `raw_13f_sync_runs` 的 `report_dates` 现在与 `mart_13f_quarterly_movers` 中已有历史报告期取并集，更新 Q2 不再隐藏 Q1/Q2 选择。
+- 从长期 scheduler 配置中移除 13F 定时更新任务；13F 仍保留手动 `sync-13f` 与显式 `sync-all` 能力。
 
 ## 2026-07-21
 

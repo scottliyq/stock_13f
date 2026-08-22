@@ -283,11 +283,12 @@ class EdgarToolsClient:
 
         for filename, document_content in information_documents:
             if filename.lower().endswith(".xml") or "<infotable" in document_content.lower():
+                normalized_content = self._unwrap_sec_xml_container(document_content)
                 try:
-                    ET.fromstring(document_content.lstrip())
+                    ET.fromstring(normalized_content)
                 except ET.ParseError:
                     continue
-                return report_date, document_content
+                return report_date, normalized_content
 
         xml_filename = next(
             (filename for filename, _ in information_documents if filename.lower().endswith(".xml")),
@@ -300,6 +301,12 @@ class EdgarToolsClient:
         raise Edgar13FParseError(
             f"13F submission {self._accession_number(filing)} has no information-table document."
         )
+
+    def _unwrap_sec_xml_container(self, content: str) -> str:
+        match = re.fullmatch(r"\s*<XML\b[^>]*>(.*?)</XML>\s*", content, flags=re.IGNORECASE | re.DOTALL)
+        if match is None:
+            return content.lstrip()
+        return match.group(1).lstrip()
 
     def _download_sec_text(self, url: str, user_agent: str, filing: object) -> str:
         try:

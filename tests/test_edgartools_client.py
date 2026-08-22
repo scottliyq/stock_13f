@@ -181,3 +181,58 @@ CONFORMED PERIOD OF REPORT: 20260630
     assert payload["report_date"] == "2026-06-30"
     assert payload["payload"]["holdings"][0]["cusip"] == "594918104"
     assert captured_timeout["seconds"] == 10
+
+
+def test_build_13f_payload_from_sec_xml_wrapper_unwraps_information_table(monkeypatch) -> None:
+    xml = """
+<XML>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:informationTable xmlns:ns1="http://www.sec.gov/edgar/document/thirteenf/informationtable">
+  <ns1:infoTable>
+    <ns1:nameOfIssuer>LOCKHEED MARTIN CORP</ns1:nameOfIssuer>
+    <ns1:titleOfClass>COM</ns1:titleOfClass>
+    <ns1:cusip>539830109</ns1:cusip>
+    <ns1:value>100</ns1:value>
+    <ns1:shrsOrPrnAmt><ns1:sshPrnamt>10</ns1:sshPrnamt><ns1:sshPrnamtType>SH</ns1:sshPrnamtType></ns1:shrsOrPrnAmt>
+    <ns1:investmentDiscretion>SOLE</ns1:investmentDiscretion>
+  </ns1:infoTable>
+</ns1:informationTable>
+</XML>
+"""
+    submission = f"""
+CONFORMED PERIOD OF REPORT: 20260630
+<DOCUMENT>
+<TYPE>INFORMATION TABLE
+<FILENAME>infotable.xml
+<TEXT>{xml}</TEXT>
+</DOCUMENT>
+"""
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_value, traceback):
+            return False
+
+        def read(self) -> bytes:
+            return submission.encode("utf-8")
+
+    monkeypatch.setattr(
+        "stock_13f.adapters.edgartools_client.urlopen",
+        lambda request, timeout: FakeResponse(),
+    )
+    filing = SimpleNamespace(
+        text_url="https://www.sec.gov/example-submission.txt",
+        form="13F-HR",
+        filing_date="2026-07-16",
+        company="LOCKERMAN FINANCIAL GROUP, INC.",
+        cik=1906539,
+        accession_number="0001906539-26-000004",
+        homepage_url="https://www.sec.gov/example-filing",
+    )
+
+    payload = EdgarToolsClient().build_13f_payload(filing, user_agent="test@example.com")
+
+    assert payload["report_date"] == "2026-06-30"
+    assert payload["payload"]["holdings"][0]["cusip"] == "539830109"

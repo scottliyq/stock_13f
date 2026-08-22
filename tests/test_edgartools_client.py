@@ -158,7 +158,14 @@ CONFORMED PERIOD OF REPORT: 20260630
         def read(self) -> bytes:
             return submission.encode("utf-8")
 
-    monkeypatch.setattr("stock_13f.adapters.edgartools_client.urlopen", lambda request, timeout: FakeResponse())
+    captured_timeout: dict[str, int] = {}
+
+    def fake_urlopen(request, timeout):
+        del request
+        captured_timeout["seconds"] = timeout
+        return FakeResponse()
+
+    monkeypatch.setattr("stock_13f.adapters.edgartools_client.urlopen", fake_urlopen)
     filing = SimpleNamespace(
         text_url="https://www.sec.gov/example-submission.txt",
         form="13F-HR",
@@ -173,3 +180,4 @@ CONFORMED PERIOD OF REPORT: 20260630
 
     assert payload["report_date"] == "2026-06-30"
     assert payload["payload"]["holdings"][0]["cusip"] == "594918104"
+    assert captured_timeout["seconds"] == 10

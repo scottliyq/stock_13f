@@ -91,6 +91,13 @@ DEFAULT_MANAGER_WATCHLIST: tuple[ManagerRegistryEntry, ...] = (
         short_description="Eclipse 相关 13F 申报主体，公开持仓高度集中，适合观察其上市公司退出/保留仓位，而不是完整反映其一级市场 Physical AI 投资组合。",
         display_order=11,
     ),
+    ManagerRegistryEntry(
+        manager_name="NVIDIA CORP",
+        manager_cik=1045810,
+        focus_areas="NVIDIA、AI 芯片、数据中心、半导体生态",
+        short_description="NVIDIA Corporation 公开申报主体，适合观察其 AI 芯片、数据中心和半导体生态相关的 13D/G 申报变化。",
+        display_order=12,
+    ),
 )
 
 

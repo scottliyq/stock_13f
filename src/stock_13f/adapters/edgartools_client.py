@@ -49,6 +49,9 @@ class EdgarRateLimitError(RuntimeError):
     """Raised when SEC temporarily blocks an edgartools request."""
 
 
+SEC_SUBMISSION_TIMEOUT_SECONDS = 10
+
+
 class EdgarToolsClient:
     """Lazy wrapper to keep edgartools optional until sync commands are used."""
 
@@ -302,7 +305,7 @@ class EdgarToolsClient:
         try:
             self._wait_for_sec_request()
             request = Request(url, headers={"User-Agent": user_agent})
-            with urlopen(request, timeout=30) as response:
+            with urlopen(request, timeout=SEC_SUBMISSION_TIMEOUT_SECONDS) as response:
                 return response.read().decode("utf-8", errors="replace")
         except HTTPError as exc:
             if exc.code in {403, 429, 503}:

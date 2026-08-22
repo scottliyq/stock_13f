@@ -6,6 +6,10 @@
 - 不再在 `reports/` 顶层新增按日期命名的修改记录文件。
 - `reports/13_following/` 等业务报告、分析产物和数据文件继续保留，不纳入本次清理。
 
+## 2026-08-18
+
+- Manager watchlist 新增 `NVIDIA CORP`（SEC CIK `0001045810`），纳入 manager 13D/G 的 watchlist 定时同步与 Managers 页面监控。
+
 ## 2026-08-08
 
 - 查询本地 13F structured ZIP、Supabase `mart_13f_quarterly_movers` 与 `raw_13f_sync_runs`，均未发现 `2026-06-30` Q2 数据；SEC 对应 structured dataset URL 当前返回 404，因此本次未执行 Q2 入库或 Quarterly movers 更新。
@@ -32,6 +36,7 @@
 
 - 修复 Streamlit `Report period` 下拉框只显示最新同步季度的问题：最新 `raw_13f_sync_runs` 的 `report_dates` 现在与 `mart_13f_quarterly_movers` 中已有历史报告期取并集，更新 Q2 不再隐藏 Q1/Q2 选择。
 - 从长期 scheduler 配置中移除 13F 定时更新任务；13F 仍保留手动 `sync-13f` 与显式 `sync-all` 能力。
+- 将单条 SEC 13F submission 下载超时从 30 秒降至 10 秒；网络失败仍按单 filing 解析失败跳过，便于 Q2 filing 增量任务快速继续。
 
 ## 2026-07-21
 

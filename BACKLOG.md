@@ -6,6 +6,10 @@
 - 不再在 `reports/` 顶层新增按日期命名的修改记录文件。
 - `reports/13_following/` 等业务报告、分析产物和数据文件继续保留，不纳入本次清理。
 
+## 2026-10-30
+
+- 基金监控默认 watchlist 新增 `Duquesne Family Office LLC`（SEC CIK `0001536411`），即 Stanley Druckenmiller 相关公开申报主体，纳入 13D/G manager 同步、覆盖审计、13F 追踪与 Managers 页面。
+
 ## 2026-08-18
 
 - Manager watchlist 新增 `NVIDIA CORP`（SEC CIK `0001045810`），纳入 manager 13D/G 的 watchlist 定时同步与 Managers 页面监控。

@@ -98,6 +98,13 @@ DEFAULT_MANAGER_WATCHLIST: tuple[ManagerRegistryEntry, ...] = (
         short_description="NVIDIA Corporation 公开申报主体，适合观察其 AI 芯片、数据中心和半导体生态相关的 13D/G 申报变化。",
         display_order=12,
     ),
+    ManagerRegistryEntry(
+        manager_name="Duquesne Family Office LLC",
+        manager_cik=1536411,
+        focus_areas="宏观周期、科技成长、集中持仓变化",
+        short_description="Stanley Druckenmiller 相关公开申报主体，适合观察宏观周期、科技成长和集中持仓的 13F 与 13D/G 变化。",
+        display_order=13,
+    ),
 )
 
 

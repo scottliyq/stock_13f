@@ -1108,9 +1108,30 @@ def load_manager_profiles() -> list[dict[str, object]]:
         rows = _fetch_all_rows("mart_manager_profile", order="display_order.asc")
     except SupabaseError:
         rows = []
-    if rows:
-        return rows
-    return [asdict(manager) for manager in list_default_managers()]
+    return _merge_manager_profiles(rows)
+
+
+def _merge_manager_profiles(rows: list[dict[str, object]]) -> list[dict[str, object]]:
+    default_rows = {
+        str(manager.manager_cik): asdict(manager)
+        for manager in list_default_managers()
+    }
+    merged_rows = dict(default_rows)
+    for row in rows:
+        manager_cik = str(row.get("manager_cik", "") or "").strip()
+        if not manager_cik:
+            continue
+        merged_row = dict(default_rows.get(manager_cik, {}))
+        merged_row.update(row)
+        merged_rows[manager_cik] = merged_row
+
+    return sorted(
+        merged_rows.values(),
+        key=lambda row: (
+            int(row.get("display_order", 999999) or 999999),
+            str(row.get("manager_name", "") or ""),
+        ),
+    )
 
 
 @st.cache_data(ttl=300, show_spinner=False)

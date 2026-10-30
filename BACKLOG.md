@@ -9,6 +9,7 @@
 ## 2026-10-30
 
 - 基金监控默认 watchlist 新增 `Duquesne Family Office LLC`（SEC CIK `0001536411`），即 Stanley Druckenmiller 相关公开申报主体，纳入 13D/G manager 同步、覆盖审计、13F 追踪与 Managers 页面。
+- 修复 `Managers` 页面在 Supabase `mart_manager_profile` 仍是旧快照时直接返回旧列表的问题；UI 现在按 `manager_cik` 合并默认 watchlist 与远端 profile，新增管理人无需等待手工重建 mart 才能显示。
 
 ## 2026-08-18
 

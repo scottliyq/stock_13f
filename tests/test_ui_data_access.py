@@ -16,6 +16,7 @@ from stock_13f.ui.data_access import build_manager_13dg_monitor_rows
 from stock_13f.ui.data_access import build_13dg_reporting_person_changes
 from stock_13f.ui.data_access import load_13dg_chain
 from stock_13f.ui.data_access import load_manager_13f_crosscheck
+from stock_13f.ui.data_access import load_manager_profiles
 from stock_13f.ui.data_access import load_latest_13dg_change_summary
 from stock_13f.ui.data_access import load_recent_8k
 from stock_13f.ui.data_access import load_recent_13dg_by_manager
@@ -57,6 +58,36 @@ def test_load_report_periods_keeps_history_when_latest_run_only_has_new_period(
     monkeypatch.setattr(data_access, "get_supabase_client", lambda: FakeClient())
 
     assert load_report_periods() == ["2026-06-30", "2026-03-31"]
+
+
+def test_load_manager_profiles_merges_new_defaults_with_stale_supabase_rows(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    load_manager_profiles.clear()
+    monkeypatch.setattr(data_access, "get_supabase_client", lambda: object())
+    monkeypatch.setattr(
+        data_access,
+        "_fetch_all_rows",
+        lambda table_name, filters=None, order=None, max_pages=25: [
+            {
+                "manager_cik": 1336528,
+                "manager_name": "Pershing Square Capital Management, L.P.",
+                "focus_areas": "stale remote value",
+                "short_description": "stale remote value",
+                "display_order": 1,
+                "is_active": True,
+            }
+        ]
+        if table_name == "mart_manager_profile"
+        else [],
+    )
+
+    rows = load_manager_profiles()
+
+    assert len(rows) == 13
+    assert rows[0]["focus_areas"] == "stale remote value"
+    duquesne = next(row for row in rows if row["manager_cik"] == 1536411)
+    assert duquesne["manager_name"] == "Duquesne Family Office LLC"
 
 
 def test_summarize_8k_row_prefers_structured_payload() -> None:
